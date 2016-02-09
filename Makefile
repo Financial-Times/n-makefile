@@ -7,10 +7,11 @@ DONE = "✓ $@ done"
 #
 
 update-tools:
-	@echo "Hold on…"
 	$(eval LATEST := $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
-	@echo "✓ $@ done — updated to $(LATEST)"
+	@echo "Updated tools to $(LATEST). Please now run:-"
+	@echo 'git add n.Makefile; git commit -am "Updated n.Makefile to $(LATEST); git push'
+	@echo $(DONE)
 
 #
 # COMMON TASKS
