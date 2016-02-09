@@ -60,7 +60,8 @@ coverage:
 	@open coverage/lcov-report/index.html
 
 verify:
-	@find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' -exec eslint {} +
+	$(eval JS_FILES := $(shell find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*'))
+	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
 
 #
 # SUB-TASKS
