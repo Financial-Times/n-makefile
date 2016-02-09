@@ -17,6 +17,8 @@ update-tools:
 # COMMON TASKS
 #
 
+.PHONY: coverage test
+
 clean:
 	git clean -fxd
 
