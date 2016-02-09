@@ -56,13 +56,16 @@ install: node_modules bower_components _install_scss_lint
 
 deploy:
 	@$(MAKE) _deploy_apex
+	@echo $(DONE)
 
 coverage:
 	@open coverage/lcov-report/index.html
+	@echo $(DONE)
 
 verify:
 	$(eval JS_FILES := $(shell find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
+	@echo $(DONE)
 
 #
 # SUB-TASKS
