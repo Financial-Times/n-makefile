@@ -22,7 +22,7 @@ update-tools:
 clean:
 	git clean -fxd
 
-install: node_modules
+install: node_modules bower_components _install_scss_lint
 	@for n in $(shell ls functions 2>/dev/null); do $(MAKE) functions/$$n/node_modules; done
 	@echo $(DONE)
 
@@ -45,9 +45,17 @@ verify:
 node_modules:
 	@if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
 
+# Regular bower install
+bower_components:
+	@if [ -e bower.json ]; then bower install && echo $(DONE); fi
+
 # node_modules for Lambda functions
 functions/%/node_modules:
 	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
+
+# It would be nice if this only installed if we found at least one *.scss file in the repo
+_install_scss_lint:
+	@if hash scss-lint 2>/dev/null; then printf ""; else gem install scss_lint && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 _apex_deploy:
