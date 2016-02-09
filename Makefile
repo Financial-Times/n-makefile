@@ -36,4 +36,3 @@ node_modules:
 # node_modules for Lambda functions
 functions/%/node_modules:
 	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
-
