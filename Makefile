@@ -27,6 +27,9 @@ install: node_modules
 deploy:
 	@$(MAKE) _apex_deploy
 
+coverage:
+	open coverage/lcov-report/index.html
+
 #
 # SUB-TASKS
 #
