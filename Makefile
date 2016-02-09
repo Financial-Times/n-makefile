@@ -48,7 +48,8 @@ update-tools:
 #
 
 clean:
-	git clean -fxd
+	@git clean -fxd
+	@echo $(DONE)
 
 install: node_modules bower_components _install_scss_lint
 	@for n in $(shell ls functions 2>/dev/null); do $(MAKE) functions/$$n/node_modules; done
