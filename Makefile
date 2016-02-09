@@ -23,6 +23,9 @@ install: node_modules
 	@for n in $(shell ls functions 2>/dev/null); do $(MAKE) functions/$$n/node_modules; done
 	@echo $(DONE)
 
+deploy:
+	@$(MAKE) _apex_deploy
+
 #
 # SUB-TASKS
 #
@@ -36,3 +39,9 @@ node_modules:
 # node_modules for Lambda functions
 functions/%/node_modules:
 	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
+
+
+# DEPLOY SUB-TASKS
+_apex_deploy:
+	@# TODO: put the logic from curl into this repo
+	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && echo $(DONE); fi
