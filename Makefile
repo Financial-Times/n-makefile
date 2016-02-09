@@ -30,7 +30,10 @@ deploy:
 	@$(MAKE) _apex_deploy
 
 coverage:
-	open coverage/lcov-report/index.html
+	@open coverage/lcov-report/index.html
+
+verify:
+	@find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' -exec eslint {} +
 
 #
 # SUB-TASKS
@@ -45,7 +48,6 @@ node_modules:
 # node_modules for Lambda functions
 functions/%/node_modules:
 	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
-
 
 # DEPLOY SUB-TASKS
 _apex_deploy:
