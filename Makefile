@@ -14,10 +14,9 @@ DONE = "✓ $@ done"
 #
 # - For ‘common’ tasks
 #     - name must match the directory name they generate
-#     - if we permit the task to be overwritten it may end with % instead of its
-#       final letter, allowing it to be overwritten without producing warnings.
-#       (this is a hack, of course, and means we have to be careful about how
-#       we name our common tasks!)
+#     - if we permit the task to be overwritten it may end with % instead of its final letter, allowing it
+#       to be overwritten without producing warnings. (this is a hack, of course, and means we have to be
+#       careful about how we name our common tasks!)
 # - For sub-tasks
 #     - snake_case_is_used
 #     - should always start with a `_`
