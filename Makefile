@@ -2,9 +2,25 @@ DONE = "✓ $@ done"
 # Warning, don't edit this file, it's maintained on GitHub and updated by runing `make update-tools`
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
+# STYLE NOTES
+# Two main types of tasks.  Common and sub.
+# Common tasks are the public facing API of the Makefile.  Developers/CI should run these commands.
+# Sub-tasks are the inner, private workings of n-makefile.  Developers/CI ought not to run these commands.
+#
+# - For ‘common’ tasks
+#     - name must match the directory name they generate
+# - For sub-tasks
+#     - snake_case_is_used
+#     - should always start with a `_`
+#     - the name should match the pattern _commontaskname_subtaskname.  E.g. _install_scss_lint
+#
+# Try to end each command with a friendly `@echo $(DONE)`
+
 #
 # META TASKS
 #
+
+.PHONY: coverage test
 
 update-tools:
 	$(eval LATEST := $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
@@ -17,8 +33,6 @@ update-tools:
 # COMMON TASKS
 #
 
-.PHONY: coverage test
-
 clean:
 	git clean -fxd
 
@@ -27,7 +41,7 @@ install: node_modules bower_components _install_scss_lint
 	@echo $(DONE)
 
 deploy:
-	@$(MAKE) _apex_deploy
+	@$(MAKE) _deploy_apex
 
 coverage:
 	@open coverage/lcov-report/index.html
@@ -58,6 +72,6 @@ _install_scss_lint:
 	@if hash scss-lint 2>/dev/null; then printf ""; else gem install scss_lint && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
-_apex_deploy:
+_deploy_apex:
 	@# TODO: put the logic from curl into this repo
 	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && echo $(DONE); fi
