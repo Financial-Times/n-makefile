@@ -14,6 +14,9 @@ DONE = "✓ $@ done"
 #
 # - For ‘common’ tasks
 #     - name must match the directory name they generate
+#     - if we permit the task to be overwritten it may end with % instead of its
+#       final letter, allowing it to be overwritten without producing warnings.
+#       (this is a hack, of course!)
 # - For sub-tasks
 #     - snake_case_is_used
 #     - should always start with a `_`
@@ -35,7 +38,6 @@ DONE = "✓ $@ done"
 
 .PHONY: coverage test
 
-# TODO: It would be really nice if this prompted the user ‘Do you want to commit and push the update to {{CURRENT_BRANCH}}? Yn’
 update-tools:
 	$(eval LATEST := $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
@@ -47,26 +49,27 @@ update-tools:
 # COMMON TASKS
 #
 
-clean:
-	@git clean -fxd
-	@echo $(DONE)
+# clean
+clea%:
+	git clean -fxd
 
-install: node_modules bower_components _install_scss_lint
+# install
+instal%: node_modules bower_components _install_scss_lint
 	@for n in $(shell ls functions 2>/dev/null); do $(MAKE) functions/$$n/node_modules; done
 	@echo $(DONE)
 
-deploy:
+# deploy
+deplo%:
 	@$(MAKE) _deploy_apex
-	@echo $(DONE)
 
-coverage:
+# coverage
+coverag%:
 	@open coverage/lcov-report/index.html
-	@echo $(DONE)
 
-verify:
+# verify
+verif%:
 	$(eval JS_FILES := $(shell find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
-	@echo $(DONE)
 
 #
 # SUB-TASKS
