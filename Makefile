@@ -3,9 +3,14 @@ DONE = "✓ $@ done"
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
 # STYLE NOTES
+# -----------
+#
 # Two main types of tasks.  Common and sub.
+#
 # Common tasks are the public facing API of the Makefile.  Developers/CI should run these commands.
 # Sub-tasks are the inner, private workings of n-makefile.  Developers/CI ought not to run these commands.
+#
+# Type specific conventions
 #
 # - For ‘common’ tasks
 #     - name must match the directory name they generate
@@ -14,7 +19,15 @@ DONE = "✓ $@ done"
 #     - should always start with a `_`
 #     - the name should match the pattern _commontaskname_subtaskname.  E.g. _install_scss_lint
 #
+# All task conventions
+#
 # Try to end each command with a friendly `@echo $(DONE)`
+#
+# For npm dev dependencies, assume they're there (hope that the devDependencies bring them), optionally
+# warn the developer to install them.  Don't try to install them from here.
+#
+# Scss-lint is a special case because Ruby.  That is allowed to be installed here but let's try to avoid
+# doing that unless we absolutely have to.
 
 #
 # META TASKS
