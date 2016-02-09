@@ -35,6 +35,7 @@ DONE = "✓ $@ done"
 
 .PHONY: coverage test
 
+# TODO: It would be really nice if this prompted the user ‘Do you want to commit and push the update to {{CURRENT_BRANCH}}? Yn’
 update-tools:
 	$(eval LATEST := $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
