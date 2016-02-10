@@ -13,13 +13,13 @@ DONE = "✓ $@ done"
 # Type specific conventions
 #
 # - For ‘common’ tasks
-#     - name must match the directory name they generate
 #     - if we permit the task to be overwritten it may end with % instead of its final letter, allowing it
 #       to be overwritten without producing warnings. (this is a hack, of course, and means we have to be
 #       careful about how we name our common tasks!)
 #     - by convention, app/component Makefiles make call commontaskname-super from inside their override
 #       to run the parent common task functionality.
 # - For sub-tasks
+#     - name must match the directory name they generate, if they generate a directory
 #     - snake_case_is_used
 #     - should always start with a `_`
 #     - the name should match the pattern _commontaskname_subtaskname.  E.g. _install_scss_lint
