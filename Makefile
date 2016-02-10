@@ -53,7 +53,8 @@ update-tools:
 
 # clean
 clea%:
-	git clean -fxd
+	@git clean -fxd
+	@echo $(DONE)
 
 # install
 instal%: node_modules bower_components _install_scss_lint
