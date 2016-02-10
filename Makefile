@@ -91,9 +91,8 @@ bower_components:
 functions/%/node_modules:
 	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
 
-# It would be nice if this only installed if we found at least one *.scss file in the repo
 _install_scss_lint:
-	@if hash scss-lint 2>/dev/null; then printf ""; else gem install scss_lint && echo $(DONE); fi
+	@if [ ! -x "$(shell command -v scss-lint)" ] && [ "$(shell find . -name '*.scss' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')" != "" ]; then gem install scss_lint && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 _deploy_apex:
