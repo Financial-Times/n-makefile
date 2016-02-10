@@ -20,7 +20,7 @@ DONE = "✓ $@ done"
 #       to run the parent common task functionality.
 # - For sub-tasks
 #     - name must match the directory name they generate, if they generate a directory
-#     - snake_case_is_used
+#     - otherwise, snake_case_is_used
 #     - should always start with a `_`
 #     - the name should match the pattern _commontaskname_subtaskname.  E.g. _install_scss_lint
 #
