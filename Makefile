@@ -74,6 +74,7 @@ coverag%:
 verif%:
 	$(eval JS_FILES := $(shell find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
+	@if [ -e Procfile ] && ! grep -q '.env' .gitignore; then echo "Heroku apps must have .env in their .gitignore" && false; fi
 	@echo $(DONE)
 
 #
