@@ -42,8 +42,8 @@ DONE = "✓ $@ done"
 update-tools:
 	$(eval LATEST := $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
-	@echo "Updated tools to $(LATEST). Please now run:-"
-	@echo 'git add n.Makefile; git commit -am "Updated n.Makefile to $(LATEST)"; git push'
+	@read -p "Updated tools to $(LATEST).  Do you want to commit and push? [y/N]" Y;\
+	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
 	@echo $(DONE)
 
 #
