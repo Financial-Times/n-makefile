@@ -117,12 +117,10 @@ VERSION = master
 # Update task
 update-tools:
 	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
-	@if [ $(LATEST) != $(VERSION) ]; then rm -f n.Makefile; fi
-
 	@#HACK: Can't figure out how to make the scope of LATEST global without making it be expanded every time the makefile is run so just pass it through
-	$(MAKE) LATEST=$(LATEST) n.Makefile
+	@if [ $(LATEST) != $(VERSION) ]; $(MAKE) LATEST=$(LATEST) n.Makefile; fi
 
-n.Makefile:
+_update-tools_update:
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
 	@read -p "Updated tools to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
