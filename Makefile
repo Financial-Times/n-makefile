@@ -99,7 +99,7 @@ _verify_eslint:
 	@if [ "$(JS_FILES)" != "" ]; then $(NPM_BIN_ENV) && eslint $(JS_FILES) && echo $(DONE); fi
 
 _verify_lintspaces:
-	if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
+	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
