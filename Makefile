@@ -64,11 +64,10 @@ coverag%:
 	@echo $(DONE)
 
 # verify
-verif%:
+verif%: _verify_lintspaces
 	$(eval JS_FILES = $(call GLOB, '*.js'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
 	@if [ -e Procfile ] && ! grep -q '.env' .gitignore; then echo "Heroku apps must have .env in their .gitignore" && false; fi
-	@if [ -e .editorconfig ]; then find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} +; fi
 	@echo $(DONE)
 
 #
@@ -92,12 +91,16 @@ functions/%/node_modules:
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss_lint && echo $(DONE); fi
 
-
 # Manage the .editorconfig file if it's in the .gitignore
 .editorconfig:
 	@if grep -q '.editorconfig' .gitignore; then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/.editorconfig > .editorconfig && echo $(DONE); fi
 
+# VERIFY SUB-TASKS
+_verify_lintspaces:
+	@if [ -e .editorconfig ]; then find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
+
 # DEPLOY SUB-TASKS
+
 _deploy_apex:
 	@# TODO: put the logic from curl into this repo
 	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && echo $(DONE); fi
