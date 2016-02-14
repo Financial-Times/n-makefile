@@ -85,7 +85,7 @@ verif%:
 
 # Regular npm install
 node_modules:
-	@if [ -e package.json ]; then $(call NPM_INSTALL) && echo $(DONE); fi
+	@if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
 
 # Regular bower install
 bower_components:
@@ -93,7 +93,7 @@ bower_components:
 
 # node_modules for Lambda functions
 functions/%/node_modules:
-	@cd $(dir $@) && if [ -e package.json ]; then $(call NPM_INSTALL) && echo $(DONE); fi
+	@cd $(dir $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
 
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss_lint && echo $(DONE); fi
@@ -105,4 +105,3 @@ _deploy_apex:
 
 # Some handy utilities
 GLOB = $(shell find . -name $(1) ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')
-NPM_INSTALL = $(shell npm prune --production && npm install)
