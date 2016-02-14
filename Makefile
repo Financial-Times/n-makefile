@@ -57,7 +57,7 @@ clea%:
 
 # install
 instal%: node_modules bower_components _install_scss_lint
-	@for n in $(shell ls functions 2>/dev/null); do $(MAKE) functions/$$n/node_modules; done
+	@$(MAKE) $(foreach n, $(shell find functions/* -type d -maxdepth 0), $n/node_modules)
 	@echo $(DONE)
 
 # deploy
