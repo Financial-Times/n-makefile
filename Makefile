@@ -49,7 +49,7 @@ clea%:
 	@echo $(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig functions/*/node_modules
+instal%: node_modules bower_components _install_scss_lint .editorconfig .scss-lint.yml functions/*/node_modules
 	@echo $(DONE)
 
 # deploy
@@ -83,9 +83,9 @@ functions/%/node_modules:
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss-lint -v 0.35.0 && echo $(DONE); fi
 
-# Manage the .editorconfig file if it's in the .gitignore
-.editorconfig:
-	@if $(call IS_GIT_IGNORED, .editorconfig); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/.editorconfig > .editorconfig && echo $(DONE); fi
+# Managg the .editorconfig and .scss-lint files if they're in the .gitignore
+.editorconfig .scss-lint.yml:
+	@if $(call IS_GIT_IGNORED, $@); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && echo $(DONE); fi
 
 # VERIFY SUB-TASKS
 
