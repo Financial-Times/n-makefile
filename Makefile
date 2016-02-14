@@ -49,7 +49,7 @@ clea%:
 	@echo $(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .scss-lint.yml functions/*/node_modules
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml functions/*/node_modules
 	@echo $(DONE)
 
 # deploy
@@ -83,15 +83,14 @@ functions/%/node_modules:
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss-lint -v 0.35.0 && echo $(DONE); fi
 
-# Manage the .editorconfig and .scss-lint files if they're in the .gitignore
-.editorconfig .scss-lint.yml:
+# Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
+.editorconfig .eslintrc.json .scss-lint.yml:
 	@if $(call IS_GIT_IGNORED, $@); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && echo $(DONE); fi
 
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	$(eval JS_FILES = $(call GLOB, '*.js'))
-	@if [ "$(JS_FILES)" != "" ]; then $(NPM_BIN_ENV) && eslint $(JS_FILES) && echo $(DONE); fi
+	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && eslint $(call GLOB, '*.js') && echo $(DONE); fi
 
 _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
