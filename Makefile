@@ -96,10 +96,10 @@ _install_scss_lint:
 
 _verify_eslint:
 	$(eval JS_FILES = $(call GLOB, '*.js'))
-	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES) && echo $(DONE); fi
+	@if [ "$(JS_FILES)" != "" ]; then $(NODE_COMMAND) && eslint $(JS_FILES) && echo $(DONE); fi
 
 _verify_lintspaces:
-	@if [ -e .editorconfig ] && [ -e package.json ]; then find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
+	if [ -e .editorconfig ] && [ -e package.json ]; then $(NODE_COMMAND) && find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
@@ -113,6 +113,7 @@ NPM_INSTALL = npm prune --production && npm install
 IS_GIT_IGNORED = grep -q $1 .gitignore
 VERSION = master
 DONE = "✓ $@ done"
+NODE_COMMAND = export PATH="$$PATH:node_modules/.bin"
 
 # UPDATE TASK
 
