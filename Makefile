@@ -64,9 +64,7 @@ coverag%:
 	@echo $(DONE)
 
 # verify
-verif%: _verify_lintspaces
-	$(eval JS_FILES = $(call GLOB, '*.js'))
-	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
+verif%: _verify_lintspaces _verify_eslint
 	@if [ -e Procfile ] && ! grep -q '.env' .gitignore; then echo "Heroku apps must have .env in their .gitignore" && false; fi
 	@echo $(DONE)
 
@@ -96,6 +94,11 @@ _install_scss_lint:
 	@if grep -q '.editorconfig' .gitignore; then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/.editorconfig > .editorconfig && echo $(DONE); fi
 
 # VERIFY SUB-TASKS
+
+_verify_eslint:
+	$(eval JS_FILES = $(call GLOB, '*.js'))
+	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES) && echo $(DONE); fi
+
 _verify_lintspaces:
 	@if [ -e .editorconfig ]; then find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
 
