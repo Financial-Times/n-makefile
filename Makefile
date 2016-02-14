@@ -103,7 +103,7 @@ _deploy_apex:
 	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && echo $(DONE); fi
 
 # Some handy utilities
-GLOB = $(shell find . -name $(1) ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')
+GLOB = $(shell find . -name $1 ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')
 NPM_INSTALL = npm prune --production && npm install
 IS_GIT_IGNORED = grep -q $1 .gitignore
 VERSION = master
