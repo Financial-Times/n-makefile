@@ -91,7 +91,7 @@ _install_scss_lint:
 
 # Manage the .editorconfig file if it's in the .gitignore
 .editorconfig:
-	@if $(call IS_GIT_IGNORED, .editorconfig); then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/.editorconfig > .editorconfig && echo $(DONE); fi
+	@if $(call IS_GIT_IGNORED, .editorconfig); then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/config/.editorconfig > .editorconfig && echo $(DONE); fi
 
 # VERIFY SUB-TASKS
 
