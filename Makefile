@@ -36,7 +36,7 @@
 # META TASKS
 #
 
-.PHONY: coverage test
+.PHONY: test
 .SECONDARY: functions/*/node_modules
 
 #
@@ -55,11 +55,6 @@ instal%: node_modules bower_components _install_scss_lint .editorconfig function
 # deploy
 deplo%:
 	@$(MAKE) _deploy_apex
-	@echo $(DONE)
-
-# coverage
-coverag%:
-	@open coverage/lcov-report/index.html
 	@echo $(DONE)
 
 # verify
