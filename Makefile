@@ -48,7 +48,8 @@ clea%:
 	@echo $(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
+instal%: node_modules bower_components _install_scss_lint .editorconfig
+	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
 	@echo $(DONE)
 
 # deploy
