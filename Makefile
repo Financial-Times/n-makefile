@@ -40,7 +40,7 @@ DONE = "✓ $@ done"
 .PHONY: coverage test
 
 update-tools:
-	$(eval LATEST := $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
+	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@read -p "Updated tools to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
 	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
@@ -72,7 +72,7 @@ coverag%:
 
 # verify
 verif%:
-	$(eval JS_FILES := $(call GLOB, '*.js'))
+	$(eval JS_FILES = $(call GLOB, '*.js'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
 	@if [ -e Procfile ] && ! grep -q '.env' .gitignore; then echo "Heroku apps must have .env in their .gitignore" && false; fi
 	@echo $(DONE)
