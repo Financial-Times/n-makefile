@@ -49,7 +49,7 @@ clea%:
 
 # install
 instal%: node_modules bower_components _install_scss_lint .editorconfig
-	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
+	@if [ -e functions ]; then $(MAKE) functions/*/node_modules; fi
 	@echo $(DONE)
 
 # deploy
