@@ -65,7 +65,7 @@ coverag%:
 
 # verify
 verif%: _verify_lintspaces _verify_eslint
-	@if [ -e Procfile ] && ! $(call IS_GIT_IGNORED, ".env"); then echo "Heroku apps must have .env in their .gitignore" && false; fi
+	@if [ -e Procfile ] && ! $(call IS_GIT_IGNORED, .env); then echo "Heroku apps must have .env in their .gitignore" && false; fi
 	@echo $(DONE)
 
 #
@@ -91,7 +91,7 @@ _install_scss_lint:
 
 # Manage the .editorconfig file if it's in the .gitignore
 .editorconfig:
-	@if $(call IS_GIT_IGNORED, ".editorconfig"); then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/.editorconfig > .editorconfig && echo $(DONE); fi
+	@if $(call IS_GIT_IGNORED, .editorconfig); then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/.editorconfig > .editorconfig && echo $(DONE); fi
 
 # VERIFY SUB-TASKS
 
