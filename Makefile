@@ -56,8 +56,8 @@ clea%:
 	@echo $(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint
-	@$(MAKE) $(foreach n, $(shell find functions/* -type d -maxdepth 0), $n/node_modules)
+instal%: node_modules bower_components _install_scss_lint .editorconfig
+	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0), $f/node_modules)
 	@echo $(DONE)
 
 # deploy
@@ -75,6 +75,7 @@ verif%:
 	$(eval JS_FILES = $(call GLOB, '*.js'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
 	@if [ -e Procfile ] && ! grep -q '.env' .gitignore; then echo "Heroku apps must have .env in their .gitignore" && false; fi
+	@if [ -e .editorconfig ]; then find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} +; fi
 	@echo $(DONE)
 
 #
@@ -97,6 +98,11 @@ functions/%/node_modules:
 
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss_lint && echo $(DONE); fi
+
+
+# Manage the .editorconfig file if it's in the .gitignore
+.editorconfig:
+	@if grep -q '.editorconfig' .gitignore; then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/.editorconfig > .editorconfig && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 _deploy_apex:
