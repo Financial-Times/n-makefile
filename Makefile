@@ -72,7 +72,7 @@ coverag%:
 
 # verify
 verif%:
-	$(eval JS_FILES := $(shell find . -name '*.js' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*'))
+	$(eval JS_FILES := $(call GLOB, '*.js'))
 	@if [ "$(JS_FILES)" != "" ]; then eslint $(JS_FILES); fi
 	@if [ -e Procfile ] && ! grep -q '.env' .gitignore; then echo "Heroku apps must have .env in their .gitignore" && false; fi
 	@echo $(DONE)
@@ -96,9 +96,12 @@ functions/%/node_modules:
 	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
 
 _install_scss_lint:
-	@if [ ! -x "$(shell command -v scss-lint)" ] && [ "$(shell find . -name '*.scss' ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')" != "" ]; then gem install scss_lint && echo $(DONE); fi
+	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss_lint && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 _deploy_apex:
 	@# TODO: put the logic from curl into this repo
 	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && echo $(DONE); fi
+
+# Some handy utilities
+GLOB = $(shell find . -name $(1) ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')
