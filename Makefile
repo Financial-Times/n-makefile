@@ -114,7 +114,8 @@ IS_GIT_IGNORED = grep -q $1 .gitignore
 VERSION = master
 DONE = "✓ $@ done"
 
-# Update task
+# UPDATE TASK
+
 update-tools:
 	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@#HACK: Can't figure out how to make the scope of LATEST global without making it be expanded every time the makefile is run so just pass it through
