@@ -39,13 +39,6 @@ DONE = "✓ $@ done"
 
 .PHONY: coverage test
 
-update-tools:
-	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
-	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
-	@read -p "Updated tools to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
-	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
-	@echo $(DONE)
-
 #
 # COMMON TASKS
 #
@@ -57,7 +50,7 @@ clea%:
 
 # install
 instal%: node_modules bower_components _install_scss_lint .editorconfig
-	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0), $f/node_modules)
+	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
 	@echo $(DONE)
 
 # deploy
@@ -112,3 +105,11 @@ _deploy_apex:
 # Some handy utilities
 GLOB = $(shell find . -name $(1) ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')
 NPM_INSTALL = npm prune --production && npm install
+
+# Update task
+update-tools:
+	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
+	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
+	@read -p "Updated tools to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
+	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
+	@echo $(DONE)
