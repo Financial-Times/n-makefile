@@ -93,7 +93,7 @@ bower_components:
 
 # node_modules for Lambda functions
 functions/%/node_modules:
-	@cd $(shell dirname $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
+	@cd $(dir $@) && if [ -e package.json ]; then npm prune --production=false && npm install && echo $(DONE); fi
 
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, *.scss)" != "" ]; then gem install scss_lint && echo $(DONE); fi
