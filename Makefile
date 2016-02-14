@@ -58,7 +58,7 @@ deplo%:
 	@echo $(DONE)
 
 # verify
-verif%: _verify_lintspaces _verify_eslint
+verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 	@if [ -e Procfile ] && ! $(call IS_GIT_IGNORED, .env); then echo "Heroku apps must have .env in their .gitignore" && false; fi
 	@echo $(DONE)
 
@@ -94,6 +94,10 @@ _verify_eslint:
 
 _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && find . -type f ! -name "*.swp" ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*' -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
+
+
+_verify_scss_lint:
+	@if [ -e .scss-lint.yml ]; then scss-lint -c ./.scss-lint.yml $(call GLOB, '*.scss') && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
