@@ -91,7 +91,7 @@ _install_scss_lint:
 
 # Manage the .editorconfig file if it's in the .gitignore
 .editorconfig:
-	@if $(call IS_GIT_IGNORED, .editorconfig); then curl -s https://raw.githubusercontent.com/Financial-Times/n-makefile/master/config/.editorconfig > .editorconfig && echo $(DONE); fi
+	@if $(call IS_GIT_IGNORED, .editorconfig); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/.editorconfig > .editorconfig && echo $(DONE); fi
 
 # VERIFY SUB-TASKS
 
@@ -112,11 +112,13 @@ _deploy_apex:
 GLOB = $(shell find . -name $(1) ! -path '*/node_modules/*' ! -path './.git/*' ! -path './coverage/*' ! -path '*/bower_components/*')
 NPM_INSTALL = npm prune --production && npm install
 IS_GIT_IGNORED = grep -q $1 .gitignore
+VERSION = master
 
 # Update task
 update-tools:
 	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
+	@sed -i "" "s/VERSION: master/VERSION: $(LATEST)/" Makefile
 	@read -p "Updated tools to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
 	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
 	@echo $(DONE)
