@@ -1,4 +1,3 @@
-DONE = "✓ $@ done"
 # Warning, don't edit this file, it's maintained on GitHub and updated by runing `make update-tools`
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
@@ -113,6 +112,7 @@ GLOB = $(shell find . -name $(1) ! -path '*/node_modules/*' ! -path './.git/*' !
 NPM_INSTALL = npm prune --production && npm install
 IS_GIT_IGNORED = grep -q $1 .gitignore
 VERSION = master
+DONE = "✓ $@ done"
 
 # Update task
 update-tools:
