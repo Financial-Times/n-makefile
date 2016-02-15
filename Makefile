@@ -79,30 +79,30 @@ functions/%/node_modules:
 	@cd $(dir $@) && if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
 _install_scss_lint:
-	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, '*.scss')" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
+	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB,'*.scss')" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
 # Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
 .editorconfig .eslintrc.json .scss-lint.yml:
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 .env:
-	@if $(call IS_GIT_IGNORED) && [ -e package.json ]; then $(call CONFIG_VARS, development, $(call APP_NAME)) > .env && $(DONE); fi
+	@if $(call IS_GIT_IGNORED) && [ -e package.json ]; then $(call CONFIG_VARS,development) > .env && $(DONE); fi
 
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && eslint $(call GLOB, '*.js') && $(DONE); fi
+	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && eslint $(call GLOB,'*.js') && $(DONE); fi
 
 _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && lintspaces -e .editorconfig -i js-comments,html-comments $(call GLOB) && $(DONE); fi
 
 _verify_scss_lint:
-	@if [ -e .scss-lint.yml ]; then scss-lint -c ./.scss-lint.yml $(call GLOB, '*.scss') && $(DONE); fi
+	@if [ -e .scss-lint.yml ]; then scss-lint -c ./.scss-lint.yml $(call GLOB,'*.scss') && $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
 _deploy_apex:
-	@if [ -e project.json ]; then apex deploy `$(call CONFIG_VARS, production, $(call APP_NAME)) | sed 's/\(.*\)/-e \1/' | tr '\n' ' '` && $(DONE); fi
+	@if [ -e project.json ]; then apex deploy `$(call CONFIG_VARS,production) | sed 's/\(.*\)/-e \1/' | tr '\n' ' '` && $(DONE); fi
 
 # Some handy utilities
 GLOB = $(shell git ls-files $1)
@@ -110,15 +110,15 @@ NPM_INSTALL = npm prune --production && npm install
 JSON_GET_VALUE = grep $1 | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2
 IS_GIT_IGNORED = grep -q $(if $1, $1, $@) .gitignore
 VERSION = master
-APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE, name))
+APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
 NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
-CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$(strip $1)/$(strip $2).env -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
+CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$1/$(if $2,$2,$(call APP_NAME)).env -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
 
 # UPDATE TASK
 
 update-tools:
-	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE, name)))
+	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE,name)))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
