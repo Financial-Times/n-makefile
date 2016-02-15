@@ -17,7 +17,7 @@ In `n-makefile` we have two main types of rules.  Common and sub.
 ### ‘Sub’ rule conventions
 
 - Name must match the directory name they generate, if they generate a directory
-- Otherwise, snake_case_is_used with a `_` prefix
+- Otherwise, `snake_case_is_used` with a `_` prefix
 - The name should match the pattern _commonrulename_subrulename.  E.g. _install_scss_lint
 
 ### All rule conventions
