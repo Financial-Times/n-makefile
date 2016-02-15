@@ -24,7 +24,7 @@
 #
 # All task conventions
 #
-# Try to end each command with a friendly `@echo $(DONE)`
+# Try to end each command with a friendly `@$(DONE)`
 #
 # For npm dev dependencies, assume they're there (hope that the devDependencies bring them), optionally
 # warn the developer to install them.  Don't try to install them from here.
@@ -45,21 +45,21 @@
 # clean
 clea%:
 	@git clean -fxd
-	@echo $(DONE)
+	@$(DONE)
 
 # install
 instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
-	@echo $(DONE)
+	@$(DONE)
 
 # deploy
 deplo%: _deploy_apex
-	@echo $(DONE)
+	@$(DONE)
 
 # verify
 verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 	@if [ -e Procfile ] && ! $(call IS_GIT_IGNORED, .env); then echo "Heroku apps must have .env in their .gitignore" && false; fi
-	@echo $(DONE)
+	@$(DONE)
 
 #
 # SUB-TASKS
@@ -69,46 +69,46 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 
 # Regular npm install
 node_modules:
-	@if [ -e package.json ]; then $(NPM_INSTALL) && echo $(DONE); fi
+	@if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
 # Regular bower install
 bower_components:
-	@if [ -e bower.json ]; then bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && echo $(DONE); fi
+	@if [ -e bower.json ]; then bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
 
 # node_modules for Lambda functions
 functions/%/node_modules:
-	@cd $(dir $@) && if [ -e package.json ]; then $(NPM_INSTALL) && echo $(DONE); fi
+	@cd $(dir $@) && if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
 _install_scss_lint:
-	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, '*.scss')" != "" ]; then gem install scss-lint -v 0.35.0 && echo $(DONE); fi
+	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB, '*.scss')" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
 # Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
 .editorconfig .eslintrc.json .scss-lint.yml:
-	@if $(call IS_GIT_IGNORED, $@); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && echo $(DONE); fi
+	@if $(call IS_GIT_IGNORED, $@); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && eslint $(call GLOB, '*.js') && echo $(DONE); fi
+	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && eslint $(call GLOB, '*.js') && $(DONE); fi
 
 _verify_lintspaces:
-	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && lintspaces -e .editorconfig -i js-comments,html-comments $(call GLOB) && echo $(DONE); fi
+	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && lintspaces -e .editorconfig -i js-comments,html-comments $(call GLOB) && $(DONE); fi
 
 _verify_scss_lint:
-	@if [ -e .scss-lint.yml ]; then scss-lint -c ./.scss-lint.yml $(call GLOB, '*.scss') && echo $(DONE); fi
+	@if [ -e .scss-lint.yml ]; then scss-lint -c ./.scss-lint.yml $(call GLOB, '*.scss') && $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
 _deploy_apex:
 	@# TODO: put the logic from curl into this repo
-	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && echo $(DONE); fi
+	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && $(DONE); fi
 
 # Some handy utilities
 GLOB = $(shell git ls-files $1)
 NPM_INSTALL = npm prune --production && npm install
 IS_GIT_IGNORED = grep -q $1 .gitignore
 VERSION = master
-DONE = ✓ $@ done
+DONE = echo ✓ $@ done
 NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
 
 # UPDATE TASK
@@ -120,4 +120,4 @@ update-tools:
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
 	@read -p "Updated tools from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
 	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
-	@echo $(DONE)
+	@$(DONE)
