@@ -108,7 +108,7 @@ GLOB = $(shell git ls-files $1)
 NPM_INSTALL = npm prune --production && npm install
 IS_GIT_IGNORED = grep -q $1 .gitignore
 VERSION = master
-DONE = "✓ $@ done"
+DONE = ✓ $@ done
 NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
 
 # UPDATE TASK
