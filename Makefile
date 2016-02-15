@@ -102,7 +102,7 @@ _verify_scss_lint:
 # DEPLOY SUB-TASKS
 
 _deploy_apex:
-	@if [ -e project.json ]; then apex deploy `$(call CONFIG_VARS,production) | sed 's/\(.*\)/-e \1/' | tr '\n' ' '` && $(DONE); fi
+	@if [ -e project.json ]; then $(call CONFIG_VARS,production) | sed 's/\(.*\)/-e \1/' | tr '\n' ' ' | xargs apex deploy && $(DONE); fi
 
 # Some handy utilities
 GLOB = $(shell git ls-files $1)
