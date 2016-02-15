@@ -26,7 +26,7 @@ git push
 
 - A complete rewrite in bash/Makefile.  The ‘heavy lifting’ should still be done by npm modules.  There'll probably be a bit **too** much implemented in bash/Makefile initially whilst we figure out exactly where to draw the line in what logic should be controlled by bash/Makefile and what should be handled by the npm modules.
 
-## Philosophy
+### Philosophy
 
 - Always **default to doing nothing**.
 - Each feature should work in **isolation**.
