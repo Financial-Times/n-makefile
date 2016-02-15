@@ -48,7 +48,7 @@ functions/%/node_modules:
 	@cd $(dir $@) && if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
 _install_scss_lint:
-	if [ ! -x "$(shell which scss-lint)" ] && [ "$(shell $(call GLOB,'*.scss'))" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
+	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(shell $(call GLOB,'*.scss'))" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
 # Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
 .editorconfig .eslintrc.json .scss-lint.yml:
