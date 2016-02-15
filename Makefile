@@ -86,7 +86,7 @@ _install_scss_lint:
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 .env:
-	if $(call IS_GIT_IGNORED) && [ -e package.json ]; then $(call CONFIG_VARS, development, $(call APP_NAME)) > .env && $(DONE); fi
+	@if $(call IS_GIT_IGNORED) && [ -e package.json ]; then $(call CONFIG_VARS, development, $(call APP_NAME)) > .env && $(DONE); fi
 
 # VERIFY SUB-TASKS
 
