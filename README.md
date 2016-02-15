@@ -52,7 +52,7 @@ git push
 E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 
 - By default, no nothing.
-- If a dot file is commited to the repository don't overwrite it (default behaviour in Makefile)
+- If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile)
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
 ### Verify
