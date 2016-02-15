@@ -48,7 +48,7 @@ functions/%/node_modules:
 	@cd $(dir $@) && if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
 _install_scss_lint:
-	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(call GLOB,'*.scss')" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
+	if [ ! -x "$(shell which scss-lint)" ] && [ "$(shell $(call GLOB,'*.scss'))" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
 # Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
 .editorconfig .eslintrc.json .scss-lint.yml:
@@ -60,13 +60,13 @@ _install_scss_lint:
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && eslint $(call GLOB,'*.js') && $(DONE); fi
+	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && $(call GLOB,'*.js') | xargs eslint && $(DONE); fi
 
 _verify_lintspaces:
-	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && lintspaces -e .editorconfig -i js-comments,html-comments $(call GLOB) && $(DONE); fi
+	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi
 
 _verify_scss_lint:
-	@if [ -e .scss-lint.yml ]; then scss-lint -c ./.scss-lint.yml $(call GLOB,'*.scss') && $(DONE); fi
+	@if [ -e .scss-lint.yml ]; then $(call GLOB,'*.scss') | xargs scss-lint -c ./.scss-lint.yml && $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
@@ -74,7 +74,7 @@ _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) | sed 's/\(.*\)/-e \1/' | tr '\n' ' ' | xargs apex deploy && $(DONE); fi
 
 # Some handy utilities
-GLOB = $(shell git ls-files $1)
+GLOB = git ls-files $1
 NPM_INSTALL = npm prune --production && npm install
 JSON_GET_VALUE = grep $1 | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2
 IS_GIT_IGNORED = grep -q $(if $1, $1, $@) .gitignore
