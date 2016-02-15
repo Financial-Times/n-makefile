@@ -29,7 +29,7 @@ git push
 - Always **default to doing nothing**.
 - Each feature should work in **isolation**.
 - Rely on **signals** and **intelligently infer** what to do.
-- The developer can **always override**:1 anything.
+- The developer can **always override** anything.
 - Unused features must not slow things down.
 
 ### Install
