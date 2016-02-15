@@ -89,13 +89,13 @@ _install_scss_lint:
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && $(call GLOB, '*.js') -exec eslint '{}' + && echo $(DONE); fi
+	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && $(call GLOB, '*.js') -exec eslint {} + && echo $(DONE); fi
 
 _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && $(call GLOB) -exec lintspaces -e .editorconfig -i js-comments,html-comments {} + && echo $(DONE); fi
 
 _verify_scss_lint:
-	@if [ -e .scss-lint.yml ]; then $(call GLOB, '*.scss') -exec scss-lint -c ./.scss-lint.yml '{}' + && echo $(DONE); fi
+	@if [ -e .scss-lint.yml ]; then $(call GLOB, '*.scss') -exec scss-lint -c ./.scss-lint.yml {} + && echo $(DONE); fi
 
 # DEPLOY SUB-TASKS
 
