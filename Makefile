@@ -53,8 +53,7 @@ instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintr
 	@echo $(DONE)
 
 # deploy
-deplo%:
-	@$(MAKE) _deploy_apex
+deplo%: _deploy_apex
 	@echo $(DONE)
 
 # verify
@@ -117,10 +116,7 @@ NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
 
 update-tools:
 	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
-	@#HACK: Can't figure out how to make the scope of LATEST global without making it be expanded every time the makefile is run so just pass it through
-	@if [ $(LATEST) != $(VERSION) ]; then $(MAKE) LATEST=$(LATEST) _update-tools_update; else echo "update-tools is up to date"; fi
-
-_update-tools_update:
+	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
 	@read -p "Updated tools from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
