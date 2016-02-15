@@ -102,7 +102,7 @@ _verify_scss_lint:
 # DEPLOY SUB-TASKS
 
 _deploy_apex:
-	@if [ -e project.json ]; then apex deploy $(shell $(call CONFIG_VARS, production, $(call APP_NAME)) | sed 's/\(.*\)/-e \1/' | tr '\n' ' ') && $(DONE); fi
+	@if [ -e project.json ]; then apex deploy `$(call CONFIG_VARS, production, $(call APP_NAME)) | sed 's/\(.*\)/-e \1/' | tr '\n' ' '` && $(DONE); fi
 
 # Some handy utilities
 GLOB = $(shell git ls-files $1)
@@ -113,7 +113,7 @@ VERSION = master
 APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE, name))
 DONE = echo ✓ $@ done
 NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
-CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$(strip $1)/$(strip $2).env -H "Authorization: $(shell heroku config:get APIKEY --app ft-next-config-vars)"
+CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$(strip $1)/$(strip $2).env -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
 
 # UPDATE TASK
 
