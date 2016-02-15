@@ -6,6 +6,8 @@
 LATEST=$(curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d ':' -f 2)
 curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$LATEST/Makefile > n.Makefile
 echo "include n.Makefile" > Makefile
+git status # check this is sensible
+git diff # check this is sensible
 git add Makefile n.Makefile
 git commit -m "Add build tools at version $LATEST"
 git push
