@@ -46,7 +46,7 @@ git push
 - Only try to install bower components if there's a `bower.json` file.
 - Only try to install the `scss-lint` Ruby Gem if it's not already installed and if there are actually `*.scss` files in the project.
 
-(We hope to get rid of scss-lint as soon as the Node port gains feature parity)
+(We hope to get rid of scss-lint as soon as the Node port gains feature parity, and then it'll come through the npm module installation ste)
 
 #### Dot files
 E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
