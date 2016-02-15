@@ -37,7 +37,6 @@
 #
 
 .PHONY: test
-.SECONDARY: functions/*/node_modules
 
 #
 # COMMON TASKS
@@ -49,7 +48,8 @@ clea%:
 	@echo $(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml functions/*/node_modules
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml
+	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
 	@echo $(DONE)
 
 # deploy
