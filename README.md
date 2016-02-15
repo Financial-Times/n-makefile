@@ -34,11 +34,11 @@ git push
 - The developer can **always override** anything.
 - Unused features must not slow things down.
 
-### Install
+## Install
 
 `make install` may pull in two types of thing.  Packages and dot files.
 
-#### Packages
+### Packages
 
 - Only try to install npm modules if there's a `package.json` file.
 - Only try to install bower components if there's a `bower.json` file.
@@ -46,14 +46,14 @@ git push
 
 (We hope to get rid of scss-lint as soon as the Node port gains feature parity)
 
-#### Dot files
+### Dot files
 E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 
 - By default, no nothing.
 - If a dot file is commited to the repository don't overwrite it (default behaviour in Makefile)
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
-### Verify
+## Verify
 
 - Only run the verify step **if** the relevant dot file exists.  E.g. only run `eslint` if `.eslintrc.json` exists.
 - Run the linting tool against an appropriate subset of the files committed to the project.
