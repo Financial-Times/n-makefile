@@ -107,7 +107,7 @@ GLOB = $(shell git ls-files $1)
 NPM_INSTALL = npm prune --production && npm install
 JSON_GET_VALUE = grep $1 | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2
 IS_GIT_IGNORED = grep -q $1 .gitignore
-VERSION = v0.0.40
+VERSION = master
 DONE = echo ✓ $@ done
 NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
 CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$(strip $1)/$(strip $2).env -H "Authorization: $(shell heroku config:get APIKEY --app ft-next-config-vars)"
