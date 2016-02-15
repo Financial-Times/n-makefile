@@ -100,21 +100,22 @@ _verify_scss_lint:
 # DEPLOY SUB-TASKS
 
 _deploy_apex:
-	@# TODO: put the logic from curl into this repo
-	@if [ -e project.json ]; then apex deploy `curl -sL https://gist.githubusercontent.com/matthew-andrews/1da58dc5f931499a91d0/raw | bash -` && $(DONE); fi
+	@if [ -e project.json ]; then apex deploy $(shell $(call CONFIG_VARS, production, $(shell cat package.json | $(call JSON_GET_VALUE, name))) | sed 's/\(.*\)/-e \1/' | tr '\n' ' ') && $(DONE); fi
 
 # Some handy utilities
 GLOB = $(shell git ls-files $1)
 NPM_INSTALL = npm prune --production && npm install
+JSON_GET_VALUE = grep $1 | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2
 IS_GIT_IGNORED = grep -q $1 .gitignore
-VERSION = master
+VERSION = v0.0.40
 DONE = echo ✓ $@ done
 NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
+CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$(strip $1)/$(strip $2).env -H "Authorization: $(shell heroku config:get APIKEY --app ft-next-config-vars)"
 
 # UPDATE TASK
 
 update-tools:
-	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2))
+	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE, name)))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
