@@ -47,10 +47,11 @@ git push
 (We hope to get rid of scss-lint as soon as the Node port gains feature parity)
 
 #### Dot files
+E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 
 - By default, no nothing.
-- If `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json` are commited to the repository don't overwrite them (default behaviour in Makefile)
-- If `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json` are not commited but **are listed in the `.gitignore` file** download them.
+- If a dot file is commited to the repository don't overwrite it (default behaviour in Makefile)
+- If a dot file is not commited but **is listed in the `.gitignore` file** download it during `make install`.
 
 ### Verify
 
