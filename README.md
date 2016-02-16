@@ -66,3 +66,7 @@ E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 
 - Only run the verify step **if** the relevant dot file exists.  E.g. only run `eslint` if `.eslintrc.json` exists.
 - Run the linting tool against an appropriate subset of the files committed to the project.
+
+## Contribution
+
+Please read the [contribution guide](./CONTRIBUTION.md).
