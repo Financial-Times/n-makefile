@@ -44,7 +44,11 @@ git push
 
 ## Commands
 
-### Install
+### `clean`
+
+Removes all the uncommited files and folders from the local clone.
+
+### `install`
 
 `make install` may pull in two types of thing.  Packages and dot files.
 
@@ -63,10 +67,14 @@ E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 - If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile)
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
-### Verify
+### `verify`
 
 - Only run the verify step **if** the relevant dot file exists.  E.g. only run `eslint` if `.eslintrc.json` exists.
 - Run the linting tool against an appropriate subset of the files committed to the project.
+
+### `update-tools`
+
+Updates your project's copy of `n-makefile` to the latest version.
 
 ## Contribution
 
