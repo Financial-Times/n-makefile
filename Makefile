@@ -66,7 +66,8 @@ _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi
 
 _verify_scss_lint:
-	@if [ -e .scss-lint.yml ]; then $(call GLOB,'*.scss') | xargs scss-lint -c ./.scss-lint.yml && $(DONE); fi
+# HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
+	if [ -e .scss-lint.yml ]; then { scss-lint -c ./.scss-lint.yml `$(call GLOB,'*.scss')`; if [ $$? -ne 0 -a $$? -ne 1 ]; then exit 1; fi; $(DONE); } fi
 
 # DEPLOY SUB-TASKS
 
