@@ -13,7 +13,7 @@
 
 # clean
 clea%:
-	@git clean -fxd
+	@git clean -fxd -e .idea
 	@$(DONE)
 
 # install
