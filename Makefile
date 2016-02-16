@@ -41,7 +41,7 @@ node_modules:
 
 # Regular bower install
 bower_components:
-	@if [ -e bower.json ]; then bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
+	@if [ -e bower.json ]; then $(NPM_BIN_ENV) && bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
 
 # node_modules for Lambda functions
 functions/%/node_modules:
