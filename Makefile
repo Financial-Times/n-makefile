@@ -13,7 +13,8 @@
 
 # clean
 clea%:
-	@git clean -fxd -e .idea
+# HACK: Can't use -e option here because it's not supported by our Jenkins
+	@git clean -fxd
 	@$(DONE)
 
 # install
