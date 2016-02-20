@@ -1,4 +1,4 @@
-# Warning, don't edit this file, it's maintained on GitHub and updated by runing `make update-tools`
+# Warning, don't edit this file, it's maintained on GitHub and updated by running `make update-tools`
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
 #
