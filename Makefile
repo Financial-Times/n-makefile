@@ -37,8 +37,11 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 # INSTALL SUB-TASKS
 
 # Regular npm install
-node_modules:
+node_modules: package.json
 	@if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
+
+# package.json intentionally left blank, used to determine whether to allow npm install task to run
+package.json:
 
 # Regular bower install
 bower_components:
