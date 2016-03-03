@@ -40,11 +40,8 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 node_modules: package.json
 	@if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
-# package.json intentionally left blank, used to determine whether to allow npm install task to run
-package.json:
-
 # Regular bower install
-bower_components:
+bower_components: bower.json
 	@if [ -e bower.json ]; then $(NPM_BIN_ENV) && bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
 
 # node_modules for Lambda functions
