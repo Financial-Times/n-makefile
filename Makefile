@@ -44,6 +44,10 @@ node_modules: package.json
 bower_components: bower.json
 	@if [ -e bower.json ]; then $(NPM_BIN_ENV) && bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
 
+# These tasks have been intentionally left blank
+package.json:
+bower.json:
+
 # node_modules for Lambda functions
 functions/%/node_modules:
 	@cd $(dir $@) && if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
