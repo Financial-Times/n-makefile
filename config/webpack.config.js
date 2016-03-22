@@ -13,7 +13,7 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.js$/,
-				loader: 'babel',
+				loader: require.resolve('babel-loader'),
 				include: [
 					/bower_components/,
 					/n-card/,
@@ -23,11 +23,15 @@ module.exports = {
 				],
 				query: {
 					cacheDirectory: true,
-					presets: (require('./package.json').dependencies.react ? ['react', 'es2015'] : ['es2015']),
+					presets: (
+						require('./package.json').dependencies.react ?
+							[require.resolve('babel-preset-react'), require.resolve('babel-preset-es2015')] :
+							[require.resolve('babel-preset-es2015')]
+					),
 					plugins: [
-						'add-module-exports',
-						'transform-runtime',
-						['transform-es2015-classes', { loose: true }]
+						require.resolve('babel-plugin-add-module-exports'),
+						require.resolve('babel-plugin-transform-runtime'),
+						[require.resolve('babel-plugin-transform-es2015-classes'), { loose: true }]
 					]
 				}
 			},
@@ -70,7 +74,8 @@ module.exports = {
 	),
 	resolve: {
 		root: [
-			path.join(__dirname, 'bower_components')
+			path.join(__dirname, 'bower_components'),
+			path.join(__dirname, 'node_modules')
 		]
 	}
 };
