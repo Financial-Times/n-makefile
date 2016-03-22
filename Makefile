@@ -39,6 +39,7 @@ buil%:
 # watch
 watc%:
 	@if [ -e webpack.config.js ]; then $(NPM_BIN_ENV) && webpack --watch; fi
+	@$(DONE)
 
 #
 # SUB-TASKS
