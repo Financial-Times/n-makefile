@@ -32,7 +32,7 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 
 # build (includes build-production)
 buil%:
-	@$(warning WARNING: Work in progress, build-production does not yet minify.  Use with caution.)
+	@$(warning WARNING: Work in progress, build-production does not yet minify or prepare tarballs for Heroku.  Use with caution.)
 	@if [ -e webpack.config.js ]; then $(NPM_BIN_ENV) && webpack $(if $(findstring build-production,$@),--bail,--dev); fi
 	@$(DONE)
 
