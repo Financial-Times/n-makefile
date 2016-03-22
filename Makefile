@@ -18,7 +18,7 @@ clea%:
 	@$(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml .env
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml .env webpack.config.js
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
 	@$(DONE)
 
@@ -29,6 +29,16 @@ deplo%: _deploy_apex
 # verify
 verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 	@$(DONE)
+
+# build (includes build-production)
+buil%:
+	@$(warning WARNING: Work in progress, build-production does not yet minify.  Use with caution.)
+	@if [ -e webpack.config.js ]; then $(NPM_BIN_ENV) && webpack $(if $(findstring build-production,$@),--bail,--dev); fi
+	@$(DONE)
+
+# watch
+watc%:
+	@if [ -e webpack.config.js ]; then $(NPM_BIN_ENV) && webpack --watch; fi
 
 #
 # SUB-TASKS
@@ -56,7 +66,7 @@ _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(shell $(call GLOB,'*.scss'))" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
 # Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
-.editorconfig .eslintrc.json .scss-lint.yml:
+.editorconfig .eslintrc.json .scss-lint.yml webpack.config.js:
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 .env:
