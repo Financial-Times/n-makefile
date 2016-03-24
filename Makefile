@@ -1,6 +1,10 @@
 # Warning, don't edit this file, it's maintained on GitHub and updated by running `make update-tools`
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
+
+# ./node_modules/.bin on the PATH
+export PATH := ./node_modules/.bin:$(PATH)
+
 #
 # META TASKS
 #
@@ -33,12 +37,12 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 # build (includes build-production)
 buil%:
 	@$(warning WARNING: Work in progress, build-production does not yet minify or prepare tarballs for Heroku.  Use with caution.)
-	@if [ -e webpack.config.js ]; then $(NPM_BIN_ENV) && webpack $(if $(findstring build-production,$@),--bail,--dev); fi
+	@if [ -e webpack.config.js ]; then webpack $(if $(findstring build-production,$@),--bail,--dev); fi
 	@$(DONE)
 
 # watch
 watc%:
-	@if [ -e webpack.config.js ]; then $(NPM_BIN_ENV) && webpack --watch; fi
+	@if [ -e webpack.config.js ]; then webpack --watch; fi
 	@$(DONE)
 
 #
@@ -53,7 +57,7 @@ node_modules: package.json
 
 # Regular bower install
 bower_components: bower.json
-	@if [ -e bower.json ]; then $(NPM_BIN_ENV) && bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
+	@if [ -e bower.json ]; then bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
 
 # These tasks have been intentionally left blank
 package.json:
@@ -76,10 +80,10 @@ _install_scss_lint:
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	@if [ -e .eslintrc.json ]; then $(NPM_BIN_ENV) && $(call GLOB,'*.js') | xargs eslint && $(DONE); fi
+	@if [ -e .eslintrc.json ]; then $(call GLOB,'*.js') | xargs eslint && $(DONE); fi
 
 _verify_lintspaces:
-	@if [ -e .editorconfig ] && [ -e package.json ]; then $(NPM_BIN_ENV) && $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi
+	@if [ -e .editorconfig ] && [ -e package.json ]; then $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi
 
 _verify_scss_lint:
 # HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
@@ -98,7 +102,6 @@ IS_GIT_IGNORED = grep -q $(if $1, $1, $@) .gitignore
 VERSION = master
 APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
-NPM_BIN_ENV = export PATH="$$PATH:node_modules/.bin"
 CONFIG_VARS = curl -sL https://ft-next-config-vars.herokuapp.com/$1/$(if $2,$2,$(call APP_NAME)).env -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
 
 # UPDATE TASK
