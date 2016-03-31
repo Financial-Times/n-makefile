@@ -30,7 +30,7 @@ module.exports = {
 					),
 					plugins: [
 						require.resolve('babel-plugin-add-module-exports'),
-						[require.resolve('babel-plugin-transform-runtime'), { polyfill: false }],
+						require.resolve('babel-plugin-transform-runtime'),
 						[require.resolve('babel-plugin-transform-es2015-classes'), { loose: true }]
 					]
 				}
