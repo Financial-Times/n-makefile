@@ -5,6 +5,9 @@
 # ./node_modules/.bin on the PATH
 export PATH := ./node_modules/.bin:$(PATH)
 
+# Use bash not sh
+SHELL := /bin/bash
+
 #
 # META TASKS
 #
