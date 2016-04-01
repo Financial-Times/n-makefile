@@ -34,7 +34,7 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 # verify
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
+verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_yaml
 	@$(DONE)
 
 # build (includes build-production)
@@ -87,6 +87,9 @@ _verify_eslint:
 
 _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi
+
+_verify_yaml:
+	@if [ -e package.json ] && [ "$(shell $(call GLOB,'*.yml'))" != "" ]; then $(call GLOB,'*.yml') | xargs js-yaml > /dev/null && $(DONE); fi
 
 _verify_scss_lint:
 # HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
