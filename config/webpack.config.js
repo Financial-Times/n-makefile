@@ -19,7 +19,7 @@ module.exports = {
 					path.resolve(__dirname, 'client'),
 					path.resolve(__dirname, 'config'),
 					path.resolve(__dirname, 'shared')
-				].concat(config.includes || []),
+				].concat((config.assets.includes || []).map(path => new RegExp(path))),
 				query: {
 					cacheDirectory: true,
 					presets: (
