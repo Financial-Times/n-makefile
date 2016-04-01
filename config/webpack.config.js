@@ -16,11 +16,10 @@ module.exports = {
 				loader: require.resolve('babel-loader'),
 				include: [
 					/bower_components/,
-					/n-card/,
 					path.resolve(__dirname, 'client'),
 					path.resolve(__dirname, 'config'),
 					path.resolve(__dirname, 'shared')
-				],
+				].concat(config.includes || []),
 				query: {
 					cacheDirectory: true,
 					presets: (
