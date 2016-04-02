@@ -38,7 +38,7 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 	@$(DONE)
 
 # build (includes build-production)
-buil%:
+buil%: public/__about.json
 	@$(warning WARNING: Work in progress, build-production does not yet minify (unless you specify this as an option in n-makefile.json) or prepare tarballs for Heroku.  Use with caution.)
 	@if [ -e webpack.config.js ]; then webpack $(if $(findstring build-production,$@),--bail,--dev); fi
 	@$(DONE)
@@ -96,6 +96,11 @@ _verify_scss_lint:
 
 _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) | sed 's/\(.*\)/-e \1/' | tr '\n' ' ' | xargs apex deploy && $(DONE); fi
+
+# VERIFY SUB-TASKS
+
+public/__about.json:
+	@mkdir -p public && echo '{"description":"$(call APP_NAME)","support":"next.team@ft.com","supportStatus":"active","appVersion":"$(shell git rev-parse HEAD | xargs echo -n)","buildCompletionTime":"$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")"}' > $@
 
 # Some handy utilities
 GLOB = git ls-files $1 | xargs -I {} find {} ! -type l
