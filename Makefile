@@ -97,7 +97,7 @@ _verify_scss_lint:
 _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) | sed 's/\(.*\)/-e \1/' | tr '\n' ' ' | xargs apex deploy && $(DONE); fi
 
-# VERIFY SUB-TASKS
+# BUILD SUB-TASKS
 
 # Only apply to Heroku apps for now
 public/__about.json:
