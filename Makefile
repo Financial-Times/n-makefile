@@ -73,7 +73,7 @@ functions/%/node_modules:
 _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(shell $(call GLOB,'*.scss'))" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
-# Manage the .editorconfig, .eslintrc.json and .scss-lint files if they're in the .gitignore
+# Manage various dot/config files if they're in the .gitignore
 .editorconfig .eslintrc.json .scss-lint.yml webpack.config.js:
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
