@@ -3,6 +3,7 @@ const autoprefixer = require('autoprefixer');
 const BowerWebpackPlugin = require('bower-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
+const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 const config = require('./n-makefile.json');
 
 module.exports = {
@@ -60,17 +61,22 @@ module.exports = {
 	postcss: function () {
 		return [autoprefixer({ browsers: ['> 1%', 'last 2 versions', 'ie > 6', 'ff ESR', 'bb >= 7'] })];
 	},
-	plugins: (process.argv.indexOf('--dev') === -1
-		? [
-			new BowerWebpackPlugin({ includes: /\.js$/ }),
-			new ExtractTextPlugin('[name]', { allChunks: true }),
-			new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } })
-		]
-		: [
+	plugins: function() {
+		const plugins = [
 			new BowerWebpackPlugin({ includes: /\.js$/ }),
 			new ExtractTextPlugin('[name]', { allChunks: true })
-		]
-	),
+		];
+
+		// Production
+		if (process.argv.indexOf('--dev') === -1) {
+			plugins.push(new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
+			if (config.assets.compress) {
+				plugins.push(new UglifyJsPlugin());
+			}
+		}
+
+		return plugins;
+	}(),
 	resolve: {
 		root: [
 			path.join(__dirname, 'bower_components'),
