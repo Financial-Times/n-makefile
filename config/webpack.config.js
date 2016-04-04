@@ -70,9 +70,7 @@ module.exports = {
 		// Production
 		if (process.argv.indexOf('--dev') === -1) {
 			plugins.push(new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
-			if (config.assets.compress !== false) {
-				plugins.push(new UglifyJsPlugin());
-			}
+			plugins.push(new UglifyJsPlugin());
 		}
 
 		return plugins;
