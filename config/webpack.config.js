@@ -48,7 +48,10 @@ module.exports = {
 			{
 				test: /\.scss$/,
 				loader: ExtractTextPlugin.extract(process.argv.indexOf('--dev') === -1
-					? `css?minimize&-autoprefixer&sourceMap!postcss-loader!sass?sourceMap&includePaths[]=${path.resolve(__dirname, './bower_components')}`
+					// COMPLEX: Must specify the outputStyle of Sass because if you don't and you use Sass with UglifyJSPlugin
+					// even if the test for the UglifyJsPlugin only matches CSS files it will magically switch Sass's outputStyle
+					// to compressed ¯\_(ツ)_/¯.
+					? `css?minimize&-autoprefixer&sourceMap!postcss-loader!sass?sourceMap&outputStyle=expanded&includePaths[]=${path.resolve(__dirname, './bower_components')}`
 					: `css!postcss-loader!sass?includePaths[]=${path.resolve(__dirname, './bower_components')}`
 				)
 			},
@@ -70,9 +73,7 @@ module.exports = {
 		// Production
 		if (process.argv.indexOf('--dev') === -1) {
 			plugins.push(new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
-			if (config.assets.compress) {
-				plugins.push(new UglifyJsPlugin());
-			}
+			plugins.push(new UglifyJsPlugin());
 		}
 
 		return plugins;
