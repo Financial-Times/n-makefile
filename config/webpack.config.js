@@ -5,6 +5,10 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
 const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 const config = require('./n-makefile.json');
+const crypto = require('crypto');
+const fs = require('fs');
+const readFileSync = fs.readFileSync;
+const writeFileSync = fs.writeFileSync;
 
 module.exports = {
 	devtool: 'source-map',
@@ -74,6 +78,28 @@ module.exports = {
 		if (process.argv.indexOf('--dev') === -1) {
 			plugins.push(new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
 			plugins.push(new UglifyJsPlugin());
+			plugins.push(function() {
+				this.plugin('done', stats => {
+					const hashable = Object.keys(stats.compilation.assets)
+						.filter(asset => !/\.map$/.test(asset))
+						.map(fullPath => {
+							const name = path.basename(fullPath);
+							const file = readFileSync(fullPath, 'utf8');
+							const hash = crypto.createHash('sha1').update(file).digest('hex');
+							const hashedName = `${hash.substring(0, 8)}/${name}`;
+							return {
+								name: name,
+								hashedName: hashedName
+							};
+						})
+						.reduce((previous, current) => {
+							previous[current.name] = current.hashedName;
+							previous[current.name + '.map'] = current.hashedName + '.map';
+							return previous;
+						}, {});
+					writeFileSync('./public/asset-hashes.json', JSON.stringify(hashable, undefined, 2), { encoding: 'UTF8' });
+				});
+			});
 		}
 
 		return plugins;
