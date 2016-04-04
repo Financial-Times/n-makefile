@@ -39,7 +39,6 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 
 # build (includes build-production)
 buil%: public/__about.json
-	@$(warning WARNING: Work in progress, build-production does not yet minify (unless you specify this as an option in n-makefile.json) or prepare tarballs for Heroku.  Use with caution.)
 	@if [ -e webpack.config.js ]; then webpack $(if $(findstring build-production,$@),--bail,--dev); fi
 	@if [ -e Procfile ] && [ $(findstring build-production,$@) == "build-production" ]; then haikro build; fi
 	@$(DONE)
