@@ -77,7 +77,7 @@ module.exports = {
 		// Production
 		if (process.argv.indexOf('--dev') === -1) {
 			plugins.push(new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
-			plugins.push(new UglifyJsPlugin());
+			plugins.push(new UglifyJsPlugin({ 'compress': { 'warnings': false } }));
 			plugins.push(function() {
 				this.plugin('done', stats => {
 					const hashable = Object.keys(stats.compilation.assets)
