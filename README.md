@@ -64,7 +64,7 @@ Removes all the uncommited files and folders from the local clone.
 E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 
 - By default, no nothing.
-- If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile)
+- If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile).
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
 ### `build` and `build-production`
