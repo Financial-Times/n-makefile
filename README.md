@@ -67,6 +67,17 @@ E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
 - If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile)
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
+### `build` and `build-production`
+
+For repositories that have client side assets to build (i.e. if `webpack.config.js` exists):-
+
+- Runs `webpack` with development settings (if `build`) or with production settings (if `build-production`).
+
+For Heroku apps (i.e. if a `Procfile` exists):-
+
+- Creates `public/__about.json` with some metadata about the current build.
+- Runs `haikro build` to prepare a `.tar.gz` file for uploading to Heroku (`build-production` only).
+
 ### `verify`
 
 - Only run the verify step **if** the relevant dot file exists.  E.g. only run `eslint` if `.eslintrc.json` exists.
