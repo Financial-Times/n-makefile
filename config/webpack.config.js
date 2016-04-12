@@ -68,7 +68,7 @@ module.exports = {
 	postcss: function () {
 		return [autoprefixer({ browsers: ['> 1%', 'last 2 versions', 'ie > 6', 'ff ESR', 'bb >= 7'] })];
 	},
-	plugins: function() {
+	plugins: (function() {
 		const plugins = [
 			new BowerWebpackPlugin({ includes: /\.js$/ }),
 			new ExtractTextPlugin('[name]', { allChunks: true })
@@ -103,7 +103,7 @@ module.exports = {
 		}
 
 		return plugins;
-	}(),
+	}()),
 	resolve: {
 		root: [
 			path.join(__dirname, 'bower_components'),

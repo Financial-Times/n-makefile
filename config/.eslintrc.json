@@ -5,9 +5,8 @@
     "mocha": true,
     "node": true
   },
-  "ecmaFeatures": {
-    "modules": true,
-    "jsx": true
+  "parserOptions": {
+    "sourceType": "module"
   },
   "rules": {
     "no-unused-vars": 2,
@@ -27,10 +26,17 @@
     "no-var": 1,
     "space-before-function-paren": [1, "always"],
     "strict": [1, "global"],
-    "no-console": 1
+    "no-console": 1,
+    "react/display-name": 0,
+    "react/prop-types": 0,
+    "react/no-danger": 0
   },
   "globals": {
     "fetch": true,
     "requireText": true
-  }
+  },
+  "plugins": [
+    "react"
+  ],
+  "extends": ["plugin:react/recommended"]
 }
