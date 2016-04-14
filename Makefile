@@ -115,12 +115,26 @@ DONE = echo ✓ $@ done
 CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(if $2,$2,$(call APP_NAME)).env -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
 
 # UPDATE TASK
+_setup-dotfiles:
+	for DOTFILE in {.editorconfig,.eslintrc.json,.scss-lint.yml,.env,webpack.config.js}; do
+		if [ ! -f $DOTFILE ]; then
+			if [ ! $(grep -Fq "$DOTFILE" .gitignore) ]; then
+					@read -p "Detected ($DOTFILE) is missing. Do you want to use the default config (will add to .gitignore and fetch config file from n-makefile on git)? [Y/n] " Y;\
+					if [ $$Y == "y" ]; then echo $DOTFILE >> .gitignore; make -f n.Makefile $DOTFILE ; fi
+			fi
+		fi
+	done
+
+setup-dotfiles: _setup-dotfiles
+	@read -p "Do you want to commit and push changes to .gitignore? [y/N] " Y;\
+	if [ $$Y == "y" ]; then git add .gitignore && git commit -m "Setup to inherit dotfiles from n-makefile" && git push; fi
 
 update-tools:
 	$(eval LATEST = $(shell curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE,name)))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
-	@read -p "Updated tools from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
-	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push; fi
+	$(MAKE) _setup-dotfiles
+	@read -p "Updated tools and config from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
+	if [ $$Y == "y" ]; then git add n.Makefile .gitignore && git commit -m "Updated tools to $(LATEST)" && git push; fi
 	@$(DONE)
