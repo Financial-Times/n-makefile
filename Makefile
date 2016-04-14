@@ -25,7 +25,7 @@ clea%:
 	@$(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.json .scss-lint.yml .env webpack.config.js
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules)
 	@$(DONE)
 
@@ -74,7 +74,7 @@ _install_scss_lint:
 	@if [ ! -x "$(shell which scss-lint)" ] && [ "$(shell $(call GLOB,'*.scss'))" != "" ]; then gem install scss-lint -v 0.35.0 && $(DONE); fi
 
 # Manage various dot/config files if they're in the .gitignore
-.editorconfig .eslintrc.json .scss-lint.yml webpack.config.js: n.Makefile
+.editorconfig .eslintrc.js .scss-lint.yml webpack.config.js: n.Makefile
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 .env:
@@ -84,7 +84,7 @@ _install_scss_lint:
 # VERIFY SUB-TASKS
 
 _verify_eslint:
-	@if [ -e .eslintrc.json ]; then $(call GLOB,'*.js') | xargs eslint && $(DONE); fi
+	@if [ -e .eslintrc.js ]; then $(call GLOB,'*.js') | xargs eslint && $(DONE); fi
 
 _verify_lintspaces:
 	@if [ -e .editorconfig ] && [ -e package.json ]; then $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi

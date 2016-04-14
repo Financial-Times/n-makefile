@@ -61,7 +61,7 @@ Removes all the uncommited files and folders from the local clone.
 (We hope to get rid of scss-lint as soon as the Node port gains feature parity, and then it'll come through the npm module installation step)
 
 #### Dot files
-E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.json`
+E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.js`
 
 - By default, no nothing.
 - If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile).
@@ -80,7 +80,7 @@ For Heroku apps (i.e. if a `Procfile` exists):-
 
 ### `verify`
 
-- Only run the verify step **if** the relevant dot file exists.  E.g. only run `eslint` if `.eslintrc.json` exists.
+- Only run the verify step **if** the relevant dot file exists.  E.g. only run `eslint` if `.eslintrc.js` exists.
 - Run the linting tool against an appropriate subset of the files committed to the project.
 
 ### `update-tools`
