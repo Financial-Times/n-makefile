@@ -40,7 +40,7 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 # build (includes build-production)
 buil%: public/__about.json
 	@if [ -e webpack.config.js ]; then webpack $(if $(findstring build-production,$@),--bail,--dev); fi
-	@if [ -e Procfile ] && [ $(findstring build-production,$@) == "build-production" ]; then haikro build; fi
+	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
 # watch
