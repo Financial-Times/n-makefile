@@ -45,7 +45,7 @@ buil%: public/__about.json
 
 # watch
 watc%:
-	@if [ -e webpack.config.js ]; then webpack --watch; fi
+	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
 
 #
