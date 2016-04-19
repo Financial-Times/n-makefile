@@ -78,7 +78,7 @@ _install_scss_lint:
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 .env:
-	@heroku auth:whoami &>/dev/null || (echo Please make sure the Heroku CLI is installed and authenticated by running `heroku auth:token`.  See more https://toolbelt.heroku.com/. && exit 1)
+	@if $(call IS_GIT_IGNORED); then heroku auth:whoami &>/dev/null || (echo Please make sure the Heroku CLI is installed and authenticated by running `heroku auth:token`.  See more https://toolbelt.heroku.com/. && exit 1); fi
 	@if $(call IS_GIT_IGNORED) && [ -e package.json ]; then ($(call CONFIG_VARS,development) > .env && $(DONE)) || (echo "Cannot get config vars for this service.  Check you are added to the ft-next-config-vars service on Heroku with operate permissions.  Do that here - https://docs.google.com/spreadsheets/d/1mbJQYJOgXAH2KfgKUM1Vgxq8FUIrahumb39wzsgStu0 (or ask someone to do it for you).  Check that your package.json's name property is correct.  Check that your project has config-vars set up in models/development.js." && exit 1); fi
 
 # VERIFY SUB-TASKS
