@@ -42,12 +42,20 @@ module.exports = {
 			// force fastclick to load CommonJS
 			{
 				test: /fastclick\.js$/,
-				loader: 'imports?define=>false'
+				loader: require.resolve('imports-loader'),
+				query: 'define=>false'
 			},
 			// don't use requireText plugin (use the 'raw' plugin)
 			{
 				test: /follow-email\.js$/,
-				loader: 'imports?requireText=>require'
+				loader: require.resolve('imports-loader'),
+				query: 'requireText=>require'
+			},
+			// set 'this' scope to window
+			{
+				test: /cssrelpreload\.js$/,
+				loader: require.resolve('imports-loader'),
+				query: 'this=>window'
 			},
 			{
 				test: /\.scss$/,
