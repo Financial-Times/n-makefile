@@ -82,6 +82,35 @@ module.exports = {
 			new ExtractTextPlugin('[name]', { allChunks: true })
 		];
 
+		// Ghetto CSS splitting
+		plugins.push(function () {
+			// lookahead so that when used as a delimeter it is not subtracted
+			const delimeter = /(?=\/\*!\s?output:[\w_-]+\.css\s?\*\/)/;
+			const target = /\/\*!\s?output:([\w_-]+\.css)\s?\*\//;
+
+			this.plugin('emit', (compilation, callback) => {
+				compilation.chunks.forEach(chunk => {
+					const css = chunk.files.filter(filename => /\.css$/.test(filename));
+
+					css.forEach(filename => {
+						const source = compilation.assets[filename].source();
+						const splits = source.split(delimeter);
+
+						splits.forEach(split => {
+							const name = target.test(split) && split.match(target).pop();
+
+							compilation.assets[name ? `./public/${name}` : filename] = {
+								source: () => split,
+								size: () => split.length
+							};
+						});
+					});
+				});
+
+				callback();
+			});
+		});
+
 		// Production
 		if (process.argv.indexOf('--dev') === -1) {
 			plugins.push(new DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
