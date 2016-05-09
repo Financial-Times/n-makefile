@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const BowerWebpackPlugin = require('bower-webpack-plugin');
@@ -84,27 +86,32 @@ module.exports = {
 
 		// Ghetto CSS splitting
 		plugins.push(function () {
-			// lookahead so that when used as a delimeter it is not subtracted
-			const delimeter = /(?=\/\*!\s?output:[\w_-]+\.css\s?\*\/)/;
-			const target = /\/\*!\s?output:([\w_-]+\.css)\s?\*\//;
+			const extractor = /\/\*!\s?start:([\w_-]+\.css)\s?\*\/[\S\s]+\/\*!\s?end:\1\s?\*\//g;
+			const target = /start:([\w_-]+\.css)/;
 
 			this.plugin('emit', (compilation, callback) => {
-				compilation.chunks.forEach(chunk => {
-					const css = chunk.files.filter(filename => /\.css$/.test(filename));
+				const css = Object.keys(compilation.assets).filter(a => /\.css$/.test(a));
 
-					css.forEach(filename => {
-						const source = compilation.assets[filename].source();
-						const splits = source.split(delimeter);
+				css.forEach(filename => {
+					const source = compilation.assets[filename].source();
+					const blocks = source.match(extractor);
 
-						splits.forEach(split => {
-							const name = target.test(split) && split.match(target).pop();
+					blocks && blocks.forEach(block => {
+						const name = block.match(target).pop();
 
-							compilation.assets[name ? `./public/${name}` : filename] = {
-								source: () => split,
-								size: () => split.length
-							};
-						});
+						// add reference to sourcemap
+						// TODO: cry
+						block += `/*# sourceMappingURL=${filename}.map*/`;
+
+						// add a new output file
+						compilation.assets[`${compilation.compiler.outputPath}/${name}`] = {
+							source: () => block,
+							size: () => block.length
+						};
 					});
+
+					// remove blocks from thearent
+					compilation.assets[filename].source = () => source.replace(extractor, '');
 				});
 
 				callback();
