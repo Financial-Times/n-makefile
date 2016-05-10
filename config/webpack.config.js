@@ -6,10 +6,15 @@ const CssExtractBlockPlugin = require('css-extract-block-webpack-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
 const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 const config = require('./n-makefile.json');
+const packageJson = require('./package.json');
 const crypto = require('crypto');
 const fs = require('fs');
 const readFileSync = fs.readFileSync;
 const writeFileSync = fs.writeFileSync;
+
+function hasReact () {
+	return packageJson.dependencies.react || packageJson.dependencies['preact-compat'];
+}
 
 module.exports = {
 	devtool: 'source-map',
@@ -29,7 +34,7 @@ module.exports = {
 				query: {
 					cacheDirectory: true,
 					presets: (
-						require('./package.json').dependencies.react ?
+						hasReact() ?
 							[require.resolve('babel-preset-react'), require.resolve('babel-preset-es2015')] :
 							[require.resolve('babel-preset-es2015')]
 					),
@@ -121,3 +126,10 @@ module.exports = {
 		]
 	}
 };
+
+if (packageJson.dependencies['preact-compat']) {
+	module.exports.resolve.alias = {
+		'react': 'preact-compat',
+		'react-dom': 'preact-compat'
+	}
+}
