@@ -127,7 +127,7 @@ module.exports = {
 	}
 };
 
-if (config.preact) {
+if (packageJson.dependencies['preact-compat']) {
 	module.exports.resolve.alias = {
 		'react': 'preact-compat',
 		'react-dom': 'preact-compat'
