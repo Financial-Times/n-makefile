@@ -2,7 +2,7 @@ const path = require('path');
 const autoprefixer = require('autoprefixer');
 const BowerWebpackPlugin = require('bower-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CssExtractBlockPlugin = require('css-extract-block-webpack-plugin');
+const extractCssBlockPlugin = require('extract-css-block-webpack-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
 const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 const config = require('./n-makefile.json');
@@ -86,7 +86,7 @@ module.exports = {
 		const plugins = [
 			new BowerWebpackPlugin({ includes: /\.js$/ }),
 			new ExtractTextPlugin('[name]', { allChunks: true }),
-			CssExtractBlockPlugin
+			extractCssBlockPlugin
 		];
 
 		// Production
