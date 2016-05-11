@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const BowerWebpackPlugin = require('bower-webpack-plugin');
@@ -88,6 +90,40 @@ module.exports = {
 			new ExtractTextPlugin('[name]', { allChunks: true }),
 			new ExtractCssBlockPlugin()
 		];
+
+		// Ghetto CSS splitting
+		plugins.push(function () {
+			const extractor = /\/\*!\s?start:([\w_-]+\.css)\s?\*\/[\S\s]+\/\*!\s?end:\1\s?\*\//g;
+			const target = /start:([\w_-]+\.css)/;
+
+			this.plugin('emit', (compilation, callback) => {
+				const css = Object.keys(compilation.assets).filter(a => /\.css$/.test(a));
+
+				css.forEach(filename => {
+					const source = compilation.assets[filename].source();
+					const blocks = source.match(extractor);
+
+					blocks && blocks.forEach(block => {
+						const name = block.match(target).pop();
+
+						// add reference to sourcemap
+						// TODO: cry
+						block += `/*# sourceMappingURL=${filename}.map*/`;
+
+						// add a new output file
+						compilation.assets[`${compilation.compiler.outputPath}/${name}`] = {
+							source: () => block,
+							size: () => block.length
+						};
+					});
+
+					// remove blocks from thearent
+					compilation.assets[filename].source = () => source.replace(extractor, '');
+				});
+
+				callback();
+			});
+		});
 
 		// Production
 		if (process.argv.indexOf('--dev') === -1) {
