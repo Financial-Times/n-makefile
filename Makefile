@@ -58,8 +58,8 @@ watc%:
 node_modules: package.json
 	@if [ -e package.json ]; then $(NPM_INSTALL) && $(DONE); fi
 
-# Regular bower install
-bower_components: bower.json
+# Regular bower install (node_modules is a dependency because bower is often installed by NPM)
+bower_components: bower.json node_modules
 	@if [ -e bower.json ]; then bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com && $(DONE); fi
 
 # These tasks have been intentionally left blank
