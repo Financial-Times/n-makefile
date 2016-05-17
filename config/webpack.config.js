@@ -117,7 +117,7 @@ module.exports = {
 		const plugins = [
 			new BowerWebpackPlugin({ includes: /\.js$/ }),
 			new ExtractTextPlugin('[name]'),
-			new ExtractCssBlockPlugin()
+			new ExtractCssBlockPlugin({ match: /main.css$/ })
 		];
 
 		if (process.argv.indexOf('--dev') === -1) {
