@@ -108,7 +108,9 @@ module.exports = {
 	},
 	sassLoader: {
 		sourcemap: true,
-		includePaths: [ path.resolve('./bower_components') ]
+		includePaths: [ path.resolve('./bower_components') ],
+		// NOTE: This line is important for preservation of comments needed by the css-extract-block plugin
+		outputStyle: 'expanded'
 	},
 	postcss: () => {
 		return [ autoprefixer({ browsers: ['> 1%', 'last 2 versions', 'ie >= 8', 'ff ESR', 'bb >= 7'] }) ];
