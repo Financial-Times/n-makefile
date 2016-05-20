@@ -40,6 +40,9 @@ function AssetHashesPlugin() {
 	};
 }
 
+/**
+ * NOTE: need to use `require.resolve` due to a bug in babel that breaks when linking modules
+ */
 module.exports = {
 	devtool: 'source-map',
 	entry: config.assets.entry,
@@ -48,7 +51,7 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.js$/,
-				loader: 'babel',
+				loader: require.resolve('babel-loader'),
 				include: (() => {
 					const includes = [
 						/bower_components/,
@@ -68,29 +71,34 @@ module.exports = {
 				query: {
 					cacheDirectory: true,
 					presets: (
-						hasReact() ? [ 'react', 'es2015' ] : [ 'es2015' ]
+						hasReact() ?
+							[require.resolve('babel-preset-react'), require.resolve('babel-preset-es2015')] :
+							[require.resolve('babel-preset-es2015')]
 					),
 					plugins: [
-						'add-module-exports',
-						'transform-runtime',
-						[ 'transform-es2015-classes', { loose: true } ]
+						require.resolve('babel-plugin-add-module-exports'),
+						require.resolve('babel-plugin-transform-runtime'),
+						[require.resolve('babel-plugin-transform-es2015-classes'), { loose: true }]
 					]
 				}
 			},
 			// force fastclick to load CommonJS
 			{
 				test: /fastclick\.js$/,
-				loader: 'imports?define=>false'
+				loader: require.resolve('imports-loader'),
+				query: 'define=>false'
 			},
 			// don't use requireText plugin (use the 'raw' plugin)
 			{
 				test: /follow-email\.js$/,
-				loader: 'imports?requireText=>require'
+				loader: require.resolve('imports-loader'),
+				query: 'requireText=>require'
 			},
 			// set 'this' scope to window
 			{
 				test: /cssrelpreload\.js$/,
-				loader: 'imports?this=>window'
+				loader: require.resolve('imports-loader'),
+				query: 'this=>window'
 			},
 			{
 				test: /\.scss$/,
