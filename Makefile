@@ -105,7 +105,7 @@ public/__about.json:
 	@if [ -e Procfile ]; then mkdir -p public && echo '{"description":"$(call APP_NAME)","support":"next.team@ft.com","supportStatus":"active","appVersion":"$(shell git rev-parse HEAD | xargs echo -n)","buildCompletionTime":"$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")"}' > $@ && $(DONE); fi
 
 # Some handy utilities
-GLOB = git ls-files $1 | xargs -I {} find {} ! -type l
+GLOB = git ls-files -z $1 | tr '\0' '\n' | xargs -I {} find {} ! -type l
 NPM_INSTALL = npm prune --production=false && npm install
 JSON_GET_VALUE = grep $1 | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2
 IS_GIT_IGNORED = grep -q $(if $1, $1, $@) .gitignore
