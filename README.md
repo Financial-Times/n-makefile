@@ -2,7 +2,7 @@
 
 ## Installing
 
-Download the latest release of `n-makefile`:-
+Download the latest release of `n-makefile` into the root directory of your project:-
 ```sh
 LATEST=$(curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d ':' -f 2)
 curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$LATEST/Makefile > n.Makefile
@@ -14,12 +14,19 @@ Add this to the top of your `Makefile`:-
 include n.Makefile
 ```
 
+If your app has a `Procfile` then you will need to add `haikro` as a dev dependency to your project:- 
+
+```sh
+npm install -D haikro
+```
+
 Now commit and go:-
 ```sh
 git add Makefile n.Makefile
 git commit -m "Add build tools at version $LATEST"
 git push
 ```
+
 
 ## Introduction
 
