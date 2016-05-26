@@ -67,11 +67,15 @@ E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.js`
 - If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile).
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
-### `build` and `build-production`
+### `assets` and `assets-production`
 
 For repositories that have client side assets to build (i.e. if `webpack.config.js` exists):-
 
-- Runs `webpack` with development settings (if `build`) or with production settings (if `build-production`).
+- Runs `webpack` with development settings (if `assets`) or with production settings (if `assets-production`).
+
+### `build` and `build-production`
+
+For repositories that have client side assets to build runs `assets`/`assets-production`
 
 For Heroku apps (i.e. if a `Procfile` exists):-
 
