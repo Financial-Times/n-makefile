@@ -54,7 +54,7 @@ asset%:
 
 # build (includes build-production)
 buil%: public/__about.json
-	@if [ -e webpack.config.js ]; then $(MAKE) $(subst $@,build,assets); fi
+	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
