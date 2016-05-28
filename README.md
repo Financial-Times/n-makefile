@@ -33,7 +33,7 @@ git push
 ### Problems trying to solve over NBT (and OBT)
 
 - Enormous dependency tree.  The `npm install` part of builds are often the slowest thing.  It's crazy that when you're building apps that don't and can never have front ends (APIs, Lambda functions) you still need to pull in webpack, Sass, etc just to get the toolchain.
-- Everyone's code editors would be much happier if the dotfiles were in the place those expect them to be.  `n-makefile` puts (or expects) `.editorconfig`, `scss-lint.yml`, etc in the root directory of projects.
+- Everyone's code editors would be much happier if the dotfiles were in the place those expect them to be.  `n-makefile` puts (or expects) `.editorconfig`, `.scss-lint.yml`, etc in the root directory of projects.
 - `make install` was dependent on `make install` having run before.  (`obt install` required `obt` to be there).
 - Try to eliminate the need to add the custom `:node_modules/.bin` to everyone's `$PATH`.
 
