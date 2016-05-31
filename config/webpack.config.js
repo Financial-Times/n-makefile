@@ -125,7 +125,7 @@ module.exports = {
 	},
 	plugins: (() => {
 		const plugins = [
-			new BowerWebpackPlugin({ includes: /\.js$/ }),
+			new BowerWebpackPlugin({ includes: /\.js$/, modulesDirectories: path.resolve('./bower_components') }),
 			new ExtractTextPlugin('[name]'),
 			new ExtractCssBlockPlugin({ match: /main\.css$/ })
 		];
