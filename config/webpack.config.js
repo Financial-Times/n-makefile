@@ -45,7 +45,19 @@ function AssetHashesPlugin() {
  */
 module.exports = {
 	devtool: 'source-map',
-	entry: config.assets.entry,
+	entry: (() => {
+		if (process.argv.indexOf('--only') > -1) {
+			const type = process.argv.match(/only[\s\=](css|js)/).pop();
+			return Object.keys(config.assets.entry).reduce((map, value) => {
+				if (value.endsWith(type)) {
+					map[value] = config.assets.entry[value];
+				}
+				return map;
+			}, {});
+		} else {
+			return config.assets.entry;
+		}
+	})(),
 	output: { filename: '[name]' },
 	module: {
 		loaders: [
