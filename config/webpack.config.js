@@ -121,7 +121,7 @@ module.exports = {
 		outputStyle: 'expanded'
 	},
 	postcss: () => {
-		return [ autoprefixer({ browsers: ['> 1%', 'last 2 versions', 'ie >= 8', 'ff ESR', 'bb >= 7'] }) ];
+		return [ autoprefixer({ browsers: ['> 1%', 'last 2 versions', 'ie >= 8', 'ff ESR', 'bb >= 7', 'iOS >= 5'] }) ];
 	},
 	plugins: (() => {
 		const plugins = [
