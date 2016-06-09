@@ -154,5 +154,8 @@ module.exports = {
 				};
 			}
 		})()
+	},
+	resolveLoader: {
+		modulesDirectories: [ path.resolve('./node_modules') ]
 	}
 };
