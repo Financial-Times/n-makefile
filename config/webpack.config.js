@@ -135,7 +135,9 @@ const configBase = {
 		if (process.argv.indexOf('--dev') === -1) {
 			plugins.push(new webpack.DefinePlugin({ 'process.env': { 'NODE_ENV': '"production"' } }));
 			plugins.push(new webpack.optimize.UglifyJsPlugin({ 'compress': { 'warnings': false } }));
-			plugins.push(new AssetHashesPlugin());
+			if (!config.plugins || config.plugins.hashedAssets !== false) {
+				plugins.push(new AssetHashesPlugin());
+			}
 		}
 
 		return plugins;
