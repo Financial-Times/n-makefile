@@ -45,7 +45,10 @@ function AssetHashesPlugin() {
  */
 const configBase = {
 	devtool: 'source-map',
-	output: { filename: '[name]' },
+	output: (() => {
+		return config.output || {filename: '[name]'};
+	})(),
+	externals: config.externals || null;
 	module: {
 		loaders: [
 			{
