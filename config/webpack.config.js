@@ -48,7 +48,7 @@ const configBase = {
 	output: (() => {
 		return config.output || {filename: '[name]'};
 	})(),
-	externals: config.externals || null;
+	externals: config.externals || null,
 	module: {
 		loaders: [
 			{
