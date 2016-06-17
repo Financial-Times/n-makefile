@@ -110,7 +110,7 @@ _verify_eslint:
 	@if [ -e .eslintrc.js ]; then $(call GLOB,'*.js') | xargs eslint && $(DONE); fi
 
 _verify_lintspaces:
-	@if [ -e .editorconfig ] && [ -e package.json ]; then $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments,html-comments && $(DONE); fi
+	@if [ -e .editorconfig ] && [ -e package.json ]; then $(call GLOB) | xargs lintspaces -e .editorconfig -i js-comments -i html-comments && $(DONE); fi
 
 _verify_scss_lint:
 # HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
