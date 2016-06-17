@@ -17,7 +17,7 @@ IS_GIT_IGNORED = grep -q $(if $1, $1, $@) .gitignore
 VERSION = master
 APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
-CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(if $2,$2,$(call APP_NAME)).env -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
+CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_NAME)$(if $2,.$2,) -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
 
 #
 # META TASKS
@@ -96,10 +96,13 @@ _install_scss_lint:
 .editorconfig .eslintrc.js .scss-lint.yml webpack.config.js: n.Makefile
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
+ENV_MSG_UPDATING = "WARNING: automatically updating ‘.gitignore’ to cover all files with .env in them, please commit the change"
+ENV_MSG_HEROKU_CLI = "Please make sure the Heroku CLI is installed and authenticated by running ‘heroku auth:token’.  See more https://toolbelt.heroku.com/. If this is not an app, delete .env from .gitignore."
+ENV_MSG_CANT_GET = "Cannot get config vars for this service.  Check you are added to the ft-next-config-vars service on Heroku with operate permissions.  Do that here - https://docs.google.com/spreadsheets/d/1mbJQYJOgXAH2KfgKUM1Vgxq8FUIrahumb39wzsgStu0 (or ask someone to do it for you).  Check that your package.json's name property is correct.  Check that your project has config-vars set up in models/development.js."
 .env:
-	@if $(call IS_GIT_IGNORED,^.env$); then echo "WARNING: automatically updating ‘.gitignore’ to cover all files with .env in them, please commit the change" && sed -i "" "s/.env/\*.env\*/g" .gitignore; fi
-	@if $(call IS_GIT_IGNORED,*.env*); then heroku auth:whoami &>/dev/null || (echo "Please make sure the Heroku CLI is installed and authenticated by running ‘heroku auth:token’.  See more https://toolbelt.heroku.com/. If this is not an app, delete .env from .gitignore." && rm .env && exit 1); fi
-	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ]; then ($(call CONFIG_VARS,development) > .env && $(DONE)) || (echo "Cannot get config vars for this service.  Check you are added to the ft-next-config-vars service on Heroku with operate permissions.  Do that here - https://docs.google.com/spreadsheets/d/1mbJQYJOgXAH2KfgKUM1Vgxq8FUIrahumb39wzsgStu0 (or ask someone to do it for you).  Check that your package.json's name property is correct.  Check that your project has config-vars set up in models/development.js." && rm .env && exit 1); fi
+	@if $(call IS_GIT_IGNORED,^.env$); then echo $(ENV_MSG_UPDATING) && sed -i "" "s/.env/\*.env\*/g" .gitignore; fi
+	@if $(call IS_GIT_IGNORED,*.env*); then heroku auth:whoami &>/dev/null || (echo $(ENV_MSG_HEROKU_CLI) && rm .env && exit 1); fi
+	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ]; then ($(call CONFIG_VARS,development,env) > .env && $(DONE)) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1); fi
 
 # VERIFY SUB-TASKS
 
@@ -115,8 +118,10 @@ _verify_scss_lint:
 
 # DEPLOY SUB-TASKS
 
+APEX_PROD_ENV_FILE = .env.prod.json
 _deploy_apex:
-	@if [ -e project.json ]; then $(call CONFIG_VARS,production) | sed 's/\(.*\)/-s \1/' | tr '\n' ' ' | xargs apex deploy && $(DONE); fi
+	@if [ -e project.json ]; then $(call CONFIG_VARS,production) > $(APEX_PROD_ENV_FILE) && apex deploy --env-file $(APEX_PROD_ENV_FILE); fi
+	@if [ -e $(APEX_PROD_ENV_FILE) ]; then rm $(APEX_PROD_ENV_FILE) && $(DONE); fi
 
 # BUILD SUB-TASKS
 
