@@ -131,7 +131,7 @@ public/__about.json:
 
 # UPDATE TASK
 update-tools:
-	$(eval LATEST = $(shell curl -fs https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE,name)))
+	$(eval LATEST = $(shell curl -fs https://api.mattandre.ws/semver/github/Financial-Times/n-makefile))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
 	@sed -i "" "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
