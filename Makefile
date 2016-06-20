@@ -1,7 +1,6 @@
 # Warning, don't edit this file, it's maintained on GitHub and updated by running `make update-tools`
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
-
 # ./node_modules/.bin on the PATH
 export PATH := ./node_modules/.bin:$(PATH)
 
@@ -45,7 +44,7 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 # verify
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
+verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_assets
 	@$(DONE)
 
 # assets (includes assets-production)
@@ -115,6 +114,11 @@ _verify_lintspaces:
 _verify_scss_lint:
 # HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
 	@if [ -e .scss-lint.yml ]; then { scss-lint -c ./.scss-lint.yml `$(call GLOB,'*.scss')`; if [ $$? -ne 0 -a $$? -ne 1 ]; then exit 1; fi; $(DONE); } fi
+
+
+MSG_PUBLIC_IGNORE = "Please ignore built assets individually - globs and entire folders not allowed"
+_verify_assets:
+	@if grep -Eq '^\/public\/(.*\*|$$)' .gitignore; then (echo $(MSG_PUBLIC_IGNORE) && exit 1); fi
 
 # DEPLOY SUB-TASKS
 
