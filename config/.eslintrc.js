@@ -45,7 +45,8 @@ if (packageJson.dependencies && (packageJson.dependencies.react || packageJson.d
 	Object.assign(config.rules, {
 		'react/display-name': 0,
 		'react/prop-types': 0,
-		'react/no-danger': 0
+		'react/no-danger': 0,
+		'react/no-render-return-value': 0
 	});
 }
 
