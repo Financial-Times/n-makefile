@@ -123,6 +123,10 @@ _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) > $(APEX_PROD_ENV_FILE) && apex deploy --env-file $(APEX_PROD_ENV_FILE); fi
 	@if [ -e $(APEX_PROD_ENV_FILE) ]; then rm $(APEX_PROD_ENV_FILE) && $(DONE); fi
 
+npm-publis%:
+	npm-prepublish --verbose
+	npm publish --access public
+
 # BUILD SUB-TASKS
 
 # Only apply to Heroku apps for now
