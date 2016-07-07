@@ -123,7 +123,7 @@ _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) > $(APEX_PROD_ENV_FILE) && apex deploy --env-file $(APEX_PROD_ENV_FILE); fi
 	@if [ -e $(APEX_PROD_ENV_FILE) ]; then rm $(APEX_PROD_ENV_FILE) && $(DONE); fi
 
-npm-publish:
+npm-publis%:
 	npm-prepublish --verbose
 	npm publish --access public
 
