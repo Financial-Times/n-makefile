@@ -102,7 +102,7 @@ ENV_MSG_CANT_GET = "Cannot get config vars for this service.  Check you are adde
 .env:
 	@if $(call IS_GIT_IGNORED,^.env$); then echo $(ENV_MSG_UPDATING) && sed -i "" "s/.env/\*.env\*/g" .gitignore; fi
 	@if $(call IS_GIT_IGNORED,*.env*); then heroku auth:whoami &>/dev/null || (echo $(ENV_MSG_HEROKU_CLI) && rm .env && exit 1); fi
-	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ]; then ($(call CONFIG_VARS,development,env) > .env && $(DONE)) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1); fi
+	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ]; then ($(call CONFIG_VARS,development,env) > .env && (cat .env | sed 's/"//g' > .env-unquoted) && $(DONE)) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1); fi
 
 # VERIFY SUB-TASKS
 
