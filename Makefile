@@ -40,7 +40,7 @@ clea%:
 	@$(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
 
@@ -101,12 +101,16 @@ _install_scss_lint:
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
 ENV_MSG_UPDATING = "WARNING: automatically updating ‘.gitignore’ to cover all files with .env in them, please commit the change"
-ENV_MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete .env from .gitignore."
 ENV_MSG_CANT_GET = "Cannot get config vars for this service.  Check you are added to the ft-next-config-vars service on Heroku with operate permissions.  Do that here - https://docs.google.com/spreadsheets/d/1mbJQYJOgXAH2KfgKUM1Vgxq8FUIrahumb39wzsgStu0 (or ask someone to do it for you).  Check that your package.json's name property is correct.  Check that your project has config-vars set up in models/development.js."
 .env:
 	@if $(call IS_GIT_IGNORED,^.env$); then echo $(ENV_MSG_UPDATING) && sed -i "" "s/.env/\*.env\*/g" .gitignore; fi
-	@if $(call IS_GIT_IGNORED,*.env*); then heroku auth:whoami &>/dev/null || (echo $(ENV_MSG_HEROKU_CLI) && rm .env && exit 1); fi
 	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ]; then ($(call CONFIG_VARS,development,env) > .env && perl -pi -e 's/="(.*)"/=\1/' .env && $(DONE)) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1); fi
+
+
+MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete .env from .gitignore."
+heroku-cli:
+	@if [ -a Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(ENV_MSG_HEROKU_CLI) && exit 1); fi
+
 
 # VERIFY SUB-TASKS
 
