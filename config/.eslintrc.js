@@ -9,7 +9,7 @@ const config = {
 		'sourceType': 'module'
 	},
 	'rules': {
-		'no-unused-vars': [2, { "vars": "all", "args": "after-used", "argsIgnorePattern": "^_$"}],
+		'no-unused-vars': 2,
 		'no-undef': 2,
 		'eqeqeq': 2,
 		'no-underscore-dangle': 0,
