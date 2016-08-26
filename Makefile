@@ -104,9 +104,9 @@ ENV_MSG_CANT_GET = "Cannot get config vars for this service.  Check you are adde
 .env:
 	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ]; then ($(call CONFIG_VARS,development,env) > .env && perl -pi -e 's/="(.*)"/=\1/' .env && $(DONE)) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1); fi
 
-MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete .env from .gitignore."
+MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete Procfile."
 heroku-cli:
-	@if [ -a Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(ENV_MSG_HEROKU_CLI) && exit 1); fi
+	@if [ -e Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(MSG_HEROKU_CLI) && exit 1); fi
 
 
 # VERIFY SUB-TASKS
