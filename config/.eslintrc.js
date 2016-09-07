@@ -25,7 +25,6 @@ const config = {
 		'one-var': [2, 'never'],
 		'quotes': [2, 'single'],
 		'space-before-function-paren': [2, 'always'],
-		'strict': [2, 'global'],
 		'wrap-iife': 2
 	},
 	'globals': {
