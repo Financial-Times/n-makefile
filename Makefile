@@ -40,7 +40,7 @@ clea%:
 	@$(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli whitesource.config.json
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli whitesource.npm.config.json whitesource.bower.config.json
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
 
@@ -100,8 +100,12 @@ _install_scss_lint:
 .editorconfig .eslintrc.js .scss-lint.yml webpack.config.js: n.Makefile
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
-whitesource.config.json:
-	@if $(call IS_GIT_IGNORED); then echo '{ "apiKey": "$(WHITESOURCE_API_KEY)", "productName":"Next", "projectName":"$(call APP_NAME)" }' > $@ && $(DONE); fi
+whitesource.bower.config.json:
+	@if $(call IS_GIT_IGNORED) && [ -e bower.json ]; then echo '{ "apiKey": "$(WHITESOURCE_API_KEY)", "productName":"Next", "projectName":"$(call APP_NAME)_bower" }' > $@ && $(DONE); fi
+
+whitesource.npm.config.json:
+	@if $(call IS_GIT_IGNORED) && [ -e package.json ]; then echo '{ "apiKey": "$(WHITESOURCE_API_KEY)", "productName":"Next", "projectName":"$(call APP_NAME)_npm" }' > $@ && $(DONE); fi
+
 
 ENV_MSG_CANT_GET = "Cannot get config vars for this service.  Check you are added to the ft-next-config-vars service on Heroku with operate permissions.  Do that here - https://docs.google.com/spreadsheets/d/1mbJQYJOgXAH2KfgKUM1Vgxq8FUIrahumb39wzsgStu0 (or ask someone to do it for you).  Check that your package.json's name property is correct.  Check that your project has config-vars set up in models/development.js."
 .env:
@@ -132,10 +136,10 @@ _deploy_apex:
 	@if [ -e $(APEX_PROD_ENV_FILE) ]; then rm $(APEX_PROD_ENV_FILE) && $(DONE); fi
 
 _deploy_whitesource_npm:
-	@if [ -e whitesource.config.json ] && [ -e package.json ]; then (whitesource run && rm -r ws* && rm npm-shrinkwrap.json && $(DONE)) || echo "whitesource run failed, skipping"; fi
+	@if [ -e whitesource.npm.config.json ]; then (whitesource run -c whitesource.npm.config.json && rm -r ws* && rm npm-shrinkwrap.json && $(DONE)) || echo "whitesource run failed, skipping"; fi
 
 _deploy_whitesource_bower:
-	@if [ -e whitesource.config.json ] && [ -e bower.json ]; then (ws-bower && rm -r ws* && rm -r .ws_bower && $(DONE)) || echo "whitesource bower failed, skipping"; fi
+	@if [ -e whitesource.bower.config.json ]; then (ws-bower -c whitesource.bower.config.json && rm -r ws* && rm -r .ws_bower && $(DONE)) || echo "whitesource bower failed, skipping"; fi
 
 npm-publis%:
 	npm-prepublish --verbose
