@@ -35,7 +35,7 @@ CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_
 
 # clean
 clea%:
-	# clean just untracked files if not on CircleCI
+	# clean just gitignored files if not on CircleCI
 	@if [ -z $(CIRCLECI) ]; then git clean -Xfd; else git clean -xfd; fi
 	@$(DONE)
 
