@@ -39,6 +39,10 @@ clea%:
 	@if [ -z $(CIRCLECI) ]; then git clean -Xfd; else git clean -xfd; fi
 	@$(DONE)
 
+cleanx:
+	@git clean -xfd
+	@$(DONE)
+
 # install
 instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
