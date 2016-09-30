@@ -36,7 +36,7 @@ CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_
 # clean
 clea%:
 # HACK: Can't use -e option here because it's not supported by our Jenkins
-	@git clean -fxd
+	@if [ -z $(I_AM_CLUMSY) ]; then git clean -xfd; else git clean -Xfd; fi
 	@$(DONE)
 
 # install
