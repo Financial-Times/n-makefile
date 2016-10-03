@@ -39,7 +39,8 @@ clea%:
 	@if [ -z $(CIRCLECI) ]; then git clean -Xfd; else git clean -xfd; fi
 	@$(DONE)
 
-cleanx:
+# start completely afresh... clean all non-indexed files including those gitignored
+fresh:
 	@git clean -xfd
 	@$(DONE)
 
