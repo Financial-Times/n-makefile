@@ -173,19 +173,22 @@ update-tools:
 # VERY FAST BUILD & WATCH SUB-TASKS
 
 _fast-build_css:
-	@node-sass --source-comments --include-path bower_components --output /tmp client/main.scss
+	@mkdir -p /tmp/$(APP_NAME)
+	@node-sass --source-comments --include-path bower_components --output /tmp/$(APP_NAME) client/main.scss
+	@postcss --use autoprefixer --autoprefixer.browsers '> 1%' --autoprefixer.browsers 'last 2 versions' --autoprefixer.browsers 'ie >= 8' --autoprefixer.browsers 'ff ESR' --autoprefixer.browsers 'bb >= 7' --autoprefixer.browsers 'iOS >= 5' --autoprefixer.flexbox 'no-2009' /tmp/$(APP_NAME)/main.css --output /tmp/$(APP_NAME)/autoprefixed.css
 	@mkdir -p public
-	@node split-css /tmp/main.css public
+	@node split-css /tmp/$(APP_NAME)/autoprefixed.css main.css public
 	@echo "/* dummy to start the app... not for production use! */" > public/main-ie8.css
 
 _fast-build_js:
 	webpack --dev --no-css
 
 _fast-watch: _fast-build_css
-	@echo STARTED ONCE
+	@mkdir -p /tmp/$(APP_NAME)
 	@node-sass --watch client --watch shared --watch bower_components \
-		--source-comments --include-path bower_components --output /tmp client/main.scss &
-	@nodemon --watch /tmp/main.css --exec "node split-css /tmp/main.css public" &
+		--source-comments --include-path bower_components --output /tmp/$(APP_NAME) client/main.scss &
+	@postcss --watch --use autoprefixer --autoprefixer.browsers '> 1%' --autoprefixer.browsers 'last 2 versions' --autoprefixer.browsers 'ie >= 8' --autoprefixer.browsers 'ff ESR' --autoprefixer.browsers 'bb >= 7' --autoprefixer.browsers 'iOS >= 5' --autoprefixer.flexbox 'no-2009' /tmp/$(APP_NAME)/main.css --output /tmp/$(APP_NAME)/autoprefixed.css &
+	@nodemon --watch /tmp/$(APP_NAME)/autoprefixed.css --exec "node split-css /tmp/$(APP_NAME)/autoprefixed.css main.css public" &
 	@webpack --watch \
 		--dev --no-css &
 	@browser-sync start --proxy https://local.ft.com:5050 --files public $(BS)
