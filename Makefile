@@ -68,6 +68,28 @@ watc%:
 	@$(DONE)
 
 #
+# VERY FAST BUILD & WATCH
+# Potentially to replace the original build and watch with
+#
+
+fast-buil%: _fast-build_css _fast-build_js
+	@$(DONE)
+
+# Reload page version
+fast-watch-reloa%:
+	@$(MAKE) _fast-watch BS="--no-inject-changes"
+
+# Inject replacement CSS & not reload page
+#
+# Doesn't work with critical CSS because it is inlined in the page. You can
+# either a) temporarily move critical CSS you're working on out of critical CSS
+# block, b) manually reload page after critical CSS changes, or c) use the
+# reload page version above instead
+#
+fast-watch-injec%:
+	@$(MAKE) _fast-watch
+
+#
 # SUB-TASKS
 #
 
@@ -147,3 +169,24 @@ update-tools:
 	@read -p "Updated tools from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
 	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push origin HEAD; fi
 	@$(DONE)
+
+# VERY FAST BUILD & WATCH SUB-TASKS
+
+_fast-build_css:
+	@node-sass --source-comments --include-path bower_components --output /tmp client/main.scss
+	@mkdir -p public
+	@node split-css /tmp/main.css public
+	@echo "/* dummy to start the app... not for production use! */" > public/main-ie8.css
+
+_fast-build_js:
+	webpack --dev --no-css
+
+_fast-watch: _fast-build_css
+	@echo STARTED ONCE
+	@node-sass --watch client --watch shared --watch bower_components \
+		--source-comments --include-path bower_components --output /tmp client/main.scss &
+	@nodemon --watch /tmp/main.css --exec "node split-css /tmp/main.css public" &
+	@webpack --watch \
+		--dev --no-css &
+	@browser-sync start --proxy https://local.ft.com:5050 --files public $(BS)
+
