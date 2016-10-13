@@ -39,7 +39,7 @@ const packageJson = require('./package.json');
 
 if (
 	(packageJson.dependencies && (packageJson.dependencies.react || packageJson.dependencies.preact)) ||
-	(packageJson.devDpendencies && (packageJson.devDpendencies.react || packageJson.devDpendencies.preact))
+	(packageJson.devDependencies && (packageJson.devDependencies.react || packageJson.devDependencies.preact))
 ) {
 	config.plugins.push('react');
 	config.extends.push('plugin:react/recommended');
