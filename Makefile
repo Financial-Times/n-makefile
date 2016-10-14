@@ -35,8 +35,13 @@ CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_
 
 # clean
 clea%:
-# HACK: Can't use -e option here because it's not supported by our Jenkins
-	@git clean -fxd
+	# clean just gitignored files if not on CircleCI
+	@if [ -z $(CIRCLECI) ]; then git clean -Xfd; else git clean -xfd; fi
+	@$(DONE)
+
+# start completely afresh... clean all non-indexed files including those gitignored
+fresh:
+	@git clean -xfd
 	@$(DONE)
 
 # install
