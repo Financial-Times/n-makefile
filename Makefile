@@ -40,12 +40,12 @@ clea%:
 	@$(DONE)
 
 # install
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli whitesource.npm.config.json whitesource.bower.config.json
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
 
 # deploy
-deplo%: _deploy_apex
+deplo%: _deploy_apex _deploy_whitesource_npm _deploy_whitesource_bower
 	@$(DONE)
 
 # verify
@@ -100,6 +100,13 @@ _install_scss_lint:
 .editorconfig .eslintrc.js .scss-lint.yml webpack.config.js: n.Makefile
 	@if $(call IS_GIT_IGNORED); then curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(VERSION)/config/$@ > $@ && $(DONE); fi
 
+whitesource.bower.config.json:
+	@if $(call IS_GIT_IGNORED) && [ -e bower.json ]; then echo '{ "apiKey": "$(WHITESOURCE_API_KEY)", "productName":"Next", "projectName":"$(call APP_NAME)_bower" }' > $@ && $(DONE); fi
+
+whitesource.npm.config.json:
+	@if $(call IS_GIT_IGNORED) && [ -e package.json ]; then echo '{ "apiKey": "$(WHITESOURCE_API_KEY)", "productName":"Next", "projectName":"$(call APP_NAME)_npm" }' > $@ && $(DONE); fi
+
+
 ENV_MSG_CANT_GET = "Cannot get config vars for this service.  Check you are added to the ft-next-config-vars service on Heroku with operate permissions.  Do that here - https://docs.google.com/spreadsheets/d/1mbJQYJOgXAH2KfgKUM1Vgxq8FUIrahumb39wzsgStu0 (or ask someone to do it for you).  Check that your package.json's name property is correct.  Check that your project has config-vars set up in models/development.js."
 .env:
 	@if $(call IS_GIT_IGNORED,*.env*) && [ -e package.json ] && [ -z $(CIRCLECI) ]; then ($(call CONFIG_VARS,development,env) > .env && perl -pi -e 's/="(.*)"/=\1/' .env && $(DONE)) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1); fi
@@ -127,6 +134,12 @@ APEX_PROD_ENV_FILE = .env.prod.json
 _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) > $(APEX_PROD_ENV_FILE) && apex deploy --env-file $(APEX_PROD_ENV_FILE); fi
 	@if [ -e $(APEX_PROD_ENV_FILE) ]; then rm $(APEX_PROD_ENV_FILE) && $(DONE); fi
+
+_deploy_whitesource_npm:
+	@if [ -e whitesource.npm.config.json ]; then (whitesource run -c whitesource.npm.config.json && rm -r ws* && rm npm-shrinkwrap.json && $(DONE)) || echo "whitesource run failed, skipping"; fi
+
+_deploy_whitesource_bower:
+	@if [ -e whitesource.bower.config.json ]; then (ws-bower -c whitesource.bower.config.json && rm -r ws* && rm -r .ws_bower && $(DONE)) || echo "whitesource bower failed, skipping"; fi
 
 npm-publis%:
 	npm-prepublish --verbose
