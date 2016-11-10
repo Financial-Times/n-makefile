@@ -27,42 +27,45 @@ CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_
 # META TASKS
 #
 
-.PHONY: test
+.PHONY: test help
+.SILENT: help
 
 #
 # COMMON TASKS
 #
 
-# clean
+clean: ## Clean this git repository.
 clea%:
 # HACK: Can't use -e option here because it's not supported by our Jenkins
 	@git clean -fxd
 	@$(DONE)
 
-# install
+install: ## Setup this repository.
 instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
 
-# deploy
+deploy: ## Deploy this repository.
 deplo%: _deploy_apex
 	@$(DONE)
 
-# verify
+verify: ## Verify this repository.
 verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 	@$(DONE)
 
-# assets (includes assets-production)
+assets: ## Build the static assets.
+assets-production: ## Build the static assets for production.
 asset%:
 	@if [ -e webpack.config.js ]; then webpack $(if $(findstring assets-production,$@),--bail,--dev); fi
 
-# build (includes build-production)
+build: ## Build this repository.
+build-production: ## Build this repository for production.
 buil%: public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
-# watch
+watch: ## Watch for static asset changes.
 watc%:
 	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
@@ -138,8 +141,7 @@ npm-publis%:
 public/__about.json:
 	@if [ -e Procfile ]; then mkdir -p public && echo '{"description":"$(call APP_NAME)","support":"next.team@ft.com","supportStatus":"active","appVersion":"$(shell git rev-parse HEAD | xargs echo -n)","buildCompletionTime":"$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")"}' > $@ && $(DONE); fi
 
-# UPDATE TASK
-update-tools:
+update-tools: ## Update this Makefile.
 	$(eval LATEST = $(shell curl -fs https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE,name)))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
@@ -147,3 +149,9 @@ update-tools:
 	@read -p "Updated tools from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
 	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push origin HEAD; fi
 	@$(DONE)
+	
+help: ## Show this help message.
+	echo "usage: make [target] ..."
+	echo ""
+	echo "targets:"
+	fgrep --no-filename "##" ${MAKEFILE_LIST} | head -n '-1' | column -s ':#' -t -c 2
