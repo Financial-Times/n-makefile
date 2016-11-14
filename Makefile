@@ -27,7 +27,7 @@ CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_
 # META TASKS
 #
 
-.PHONY: test hel%
+.PHONY: test
 
 #
 # COMMON TASKS
