@@ -27,46 +27,42 @@ CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_
 # META TASKS
 #
 
-.PHONY: test help
-.SILENT: help
+.PHONY: test hel%
 
 #
 # COMMON TASKS
 #
 
-clean: ## Clean this git repository.
-clea%:
+clea%: ## clean: Clean this git repository.
 # HACK: Can't use -e option here because it's not supported by our Jenkins
 	@git clean -fxd
 	@$(DONE)
 
-install: ## Setup this repository.
+instal%: ## install: Setup this repository.
 instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
 
-deploy: ## Deploy this repository.
+deplo%: ## deploy: Deploy this repository.
 deplo%: _deploy_apex
 	@$(DONE)
 
-verify: ## Verify this repository.
+verif%: ## verify: Verify this repository.
 verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
 	@$(DONE)
 
-assets: ## Build the static assets.
-assets-production: ## Build the static assets for production.
-asset%:
+asset%: ## assets: Build the static assets.
+asset%: ## assets-production: Build the static assets for production.
 	@if [ -e webpack.config.js ]; then webpack $(if $(findstring assets-production,$@),--bail,--dev); fi
 
-build: ## Build this repository.
-build-production: ## Build this repository for production.
+buil%: ## build: Build this repository.
+buil%: ## build: Build this repository for production.
 buil%: public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
-watch: ## Watch for static asset changes.
-watc%:
+watc%: ## watch: Watch for static asset changes.
 	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
 
@@ -131,7 +127,7 @@ _deploy_apex:
 	@if [ -e project.json ]; then $(call CONFIG_VARS,production) > $(APEX_PROD_ENV_FILE) && apex deploy --env-file $(APEX_PROD_ENV_FILE); fi
 	@if [ -e $(APEX_PROD_ENV_FILE) ]; then rm $(APEX_PROD_ENV_FILE) && $(DONE); fi
 
-npm-publis%:
+npm-publis%: ## npm-publish: Publish this package to npm.
 	npm-prepublish --verbose
 	npm publish --access public
 
@@ -141,7 +137,7 @@ npm-publis%:
 public/__about.json:
 	@if [ -e Procfile ]; then mkdir -p public && echo '{"description":"$(call APP_NAME)","support":"next.team@ft.com","supportStatus":"active","appVersion":"$(shell git rev-parse HEAD | xargs echo -n)","buildCompletionTime":"$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")"}' > $@ && $(DONE); fi
 
-update-tools: ## Update this Makefile.
+update-tools: ## update-tools: Update this Makefile.
 	$(eval LATEST = $(shell curl -fs https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE,name)))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
@@ -150,8 +146,8 @@ update-tools: ## Update this Makefile.
 	if [ $$Y == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push origin HEAD; fi
 	@$(DONE)
 	
-help: ## Show this help message.
-	echo "usage: make [target] ..."
-	echo ""
-	echo "targets:"
-	fgrep --no-filename "##" ${MAKEFILE_LIST} | head -n '-1' | column -s ':#' -t -c 2
+hel%: ## help: Show this help message.
+	@echo "usage: make [target] ..."
+	@echo ""
+	@echo "targets:"
+	@fgrep -h "##" ${MAKEFILE_LIST} | head -n '-1' | cut -d ' ' -f '3-' | column -t -s ':'
