@@ -150,4 +150,4 @@ hel%: ## help: Show this help message.
 	@echo "usage: make [target] ..."
 	@echo ""
 	@echo "targets:"
-	@fgrep -h "##" ${MAKEFILE_LIST} | head -n '-1' | cut -d ' ' -f '3-' | column -t -s ':'
+	@grep -Eh '^.+:\ ##\ .+' ${MAKEFILE_LIST} | cut -d ' ' -f '3-' | column -t -s ':'
