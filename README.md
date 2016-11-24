@@ -98,6 +98,16 @@ For Heroku apps (i.e. if a `Procfile` exists):-
 
 Updates your project's copy of `n-makefile` to the latest version.
 
+### `help`
+
+Prints usage information for the rules defined in the Makefile.
+
+Add your own descriptions by commenting your rules like so:
+
+```make
+rule-%: ## rule-name: Rule description.
+```
+
 ## Contribution
 
 Please read the [contribution guide](./CONTRIBUTION.md).
