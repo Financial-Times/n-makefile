@@ -39,7 +39,7 @@ clea%: ## clean: Clean this git repository.
 	@$(DONE)
 
 instal%: ## install: Setup this repository.
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env webpack.config.js heroku-cli
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env .pa11yci webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
 
@@ -48,7 +48,7 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 verif%: ## verify: Verify this repository.
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
+verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y
 	@$(DONE)
 
 asset%: ## assets: Build the static assets.
@@ -121,6 +121,13 @@ _verify_lintspaces:
 _verify_scss_lint:
 # HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
 	@if [ -e .scss-lint.yml ]; then { scss-lint -c ./.scss-lint.yml `$(call GLOB,'*.scss')`; if [ $$? -ne 0 -a $$? -ne 1 ]; then exit 1; fi; $(DONE); } fi
+
+_verify_pa11y:
+	@if [ -e .pa11yci.js ]; then {
+
+	IF DEVELOPING LOCALLY DO: @export TEST_URL="local.ft.com:3002"; pa11y-ci
+	IF CI DO: @export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci IF APP IS DEPLOYED YET WHEN WE DO VERIFY??
+}
 
 # DEPLOY SUB-TASKS
 
