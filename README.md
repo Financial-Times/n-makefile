@@ -2,16 +2,22 @@
 
 ## Installing
 
-Download the latest release of `n-makefile`:-
+Download the latest release of `n-makefile` into the root directory of your project:-
 ```sh
 LATEST=$(curl -s https://api.github.com/repos/Financial-Times/n-makefile/tags | grep name | head -n 1 | sed 's/[," ]//g' | cut -d ':' -f 2)
-curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$LATEST/Makefile > n.Makefile
-sed -i "" "s/^VERSION = master/VERSION = $LATEST/" n.Makefile
+curl -sL "https://raw.githubusercontent.com/Financial-Times/n-makefile/${LATEST}/Makefile" > n.Makefile
+perl -p -i -e "s/^VERSION = master/VERSION = ${LATEST}/" n.Makefile
 ```
 
 Add this to the top of your `Makefile`:-
 ```Makefile
 include n.Makefile
+```
+
+If your app has a `Procfile` then you will need to add `haikro` as a dev dependency to your project:-
+
+```sh
+npm install -D haikro
 ```
 
 Now commit and go:-
@@ -21,12 +27,13 @@ git commit -m "Add build tools at version $LATEST"
 git push
 ```
 
+
 ## Introduction
 
 ### Problems trying to solve over NBT (and OBT)
 
 - Enormous dependency tree.  The `npm install` part of builds are often the slowest thing.  It's crazy that when you're building apps that don't and can never have front ends (APIs, Lambda functions) you still need to pull in webpack, Sass, etc just to get the toolchain.
-- Everyone's code editors would be much happier if the dotfiles were in the place those expect them to be.  `n-makefile` puts (or expects) `.editorconfig`, `scss-lint.yml`, etc in the root directory of projects.
+- Everyone's code editors would be much happier if the dotfiles were in the place those expect them to be.  `n-makefile` puts (or expects) `.editorconfig`, `.scss-lint.yml`, etc in the root directory of projects.
 - `make install` was dependent on `make install` having run before.  (`obt install` required `obt` to be there).
 - Try to eliminate the need to add the custom `:node_modules/.bin` to everyone's `$PATH`.
 
@@ -67,11 +74,15 @@ E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.js`
 - If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile).
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
 
-### `build` and `build-production`
+### `assets` and `assets-production`
 
 For repositories that have client side assets to build (i.e. if `webpack.config.js` exists):-
 
-- Runs `webpack` with development settings (if `build`) or with production settings (if `build-production`).
+- Runs `webpack` with development settings (if `assets`) or with production settings (if `assets-production`).
+
+### `build` and `build-production`
+
+For repositories that have client side assets to build runs `assets`/`assets-production`
 
 For Heroku apps (i.e. if a `Procfile` exists):-
 
@@ -86,6 +97,16 @@ For Heroku apps (i.e. if a `Procfile` exists):-
 ### `update-tools`
 
 Updates your project's copy of `n-makefile` to the latest version.
+
+### `help`
+
+Prints usage information for the rules defined in the Makefile.
+
+Add your own descriptions by commenting your rules like so:
+
+```make
+rule-%: ## rule-name: Rule description.
+```
 
 ## Contribution
 

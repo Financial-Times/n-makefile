@@ -13,6 +13,11 @@ In `n-makefile` we have two main types of rules.  Common and sub.
 
 - If we permit the rule to be overwritten it may end with % instead of its final letter, allowing it to be overwritten without producing warnings. (this is a hack, of course, and means we have to be careful about how we name our common rules!)
 - By convention, app/component Makefiles make call commonrulename-super from inside their override to run the parent common rule functionality.
+- Include a comment using the following convention for it to be automatically parsed by the `help` rule:
+
+```make
+rule-nam%: ## rule-name: Rule description.
+```
 
 ### ‘Sub’ rule conventions
 
