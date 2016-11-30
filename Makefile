@@ -141,11 +141,11 @@ update-tools: ## update-tools: Update this Makefile.
 	$(eval LATEST = $(shell curl -fs https://api.github.com/repos/Financial-Times/n-makefile/tags | $(call JSON_GET_VALUE,name)))
 	$(if $(filter $(LATEST), $(VERSION)), $(error Cannot update n-makefile, as it is already up to date!))
 	@curl -sL https://raw.githubusercontent.com/Financial-Times/n-makefile/$(LATEST)/Makefile > n.Makefile
-	@sed -i "s/^VERSION = master/VERSION = $(LATEST)/" n.Makefile
+	@perl -p -i -e "s/^VERSION = master/VERSION = ${LATEST}/" n.Makefile
 	@read -p "Updated tools from $(VERSION) to $(LATEST).  Do you want to commit and push? [y/N] " Y;\
 	if [ "$$Y" == "y" ]; then git add n.Makefile && git commit -m "Updated tools to $(LATEST)" && git push origin HEAD; fi
 	@$(DONE)
-	
+
 hel%: ## help: Show this help message.
 	@echo "usage: make [target] ..."
 	@echo ""
