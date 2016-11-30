@@ -110,9 +110,6 @@ MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see ht
 heroku-cli:
 	@if [ -e Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(MSG_HEROKU_CLI) && exit 1); fi
 
-
-
-
 # VERIFY SUB-TASKS
 
 _verify_eslint:
