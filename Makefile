@@ -48,7 +48,11 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 verif%: ## verify: Verify this repository.
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y
+verif%: _verify_lintspaces _verify_eslint _verify_scss_lint
+	@$(DONE)
+
+a11%: ## a11y: Check accessibility for this repository.
+a11%: _run_pa11y
 	@$(DONE)
 
 asset%: ## assets: Build the static assets.
@@ -107,6 +111,9 @@ MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see ht
 heroku-cli:
 	@if [ -e Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(MSG_HEROKU_CLI) && exit 1); fi
 
+# a11y:
+# 	@export TEST_URL="local.ft.com:3002"; pa11y-ci
+
 # VERIFY SUB-TASKS
 
 _verify_eslint:
@@ -119,12 +126,9 @@ _verify_scss_lint:
 # HACK: Use backticks rather than xargs because xargs swallow exit codes (everything becomes 1 and stoopidly scss-lint exits with 1 if warnings, 2 if errors)
 	@if [ -e .scss-lint.yml ]; then { scss-lint -c ./.scss-lint.yml `$(call GLOB,'*.scss')`; if [ $$? -ne 0 -a $$? -ne 1 ]; then exit 1; fi; $(DONE); } fi
 
-_verify_pa11y:
-	@if [ -e .pa11yci.js ]; then {
-
-	IF DEVELOPING LOCALLY DO: @export TEST_URL="local.ft.com:3002"; pa11y-ci
-	IF CI DO: @export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci IF APP IS DEPLOYED YET WHEN WE DO VERIFY??
-}
+_run_pa11y:
+	@if [ TEST_APP has a number in it ]; @export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci; fi
+	@if [ TEST_APP does not have a number in it]; @export TEST_URL="local.ft.com:3002"; pa11y-ci; fi
 
 # DEPLOY SUB-TASKS
 

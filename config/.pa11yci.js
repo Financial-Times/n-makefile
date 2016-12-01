@@ -25,29 +25,6 @@ const smoke = require('./test/smoke.js');
 
 const urls = [];
 
-smoke.forEach((config) => {
-	for (url in config.urls) {
-
-		// Fragments and components, not real pages
-		const exception = url.indexOf('fragment=true') !== -1 || url.indexOf('embedded-components') !== -1 || url.indexOf('story-package') !== -1 || url.indexOf('count=') !== -1;
-
-		if (config.urls[url] !== 200 || url === '/__health' || exception) {
-			continue;
-		}
-
-		const thisUrl = {
-			url: process.env.TEST_URL + url
-		}
-
-		if (config.headers) {
-			thisUrl.headers = config.headers
-		}
-
-		urls.push(thisUrl)
-	}
-});
-
-
 const config = {
 	defaults: {
 		page: {
@@ -57,8 +34,35 @@ const config = {
 		},
 		timeout: 50000
 	},
-	urls: []
+	urls: [],
+	exceptions: []
 }
+
+smoke.forEach((smokeConfig) => {
+	for (url in smokeConfig.urls) {
+
+		let isException = false;
+
+		config.exceptions.forEach((path) => {
+			isException = isException || url.indexOf(path) !== -1;
+		});
+
+		if (smokeConfig.urls[url] !== 200 || url === '/__health' || isException) {
+			continue;
+		}
+
+		const thisUrl = {
+			url: process.env.TEST_URL + url
+		}
+
+		if (smokeConfig.headers) {
+			thisUrl.headers = smokeConfig.headers
+		}
+
+		urls.push(thisUrl)
+	}
+});
+
 
 for (viewport of viewports) {
 	for (url of urls) {
@@ -68,3 +72,4 @@ for (viewport of viewports) {
 }
 
 module.exports = config;
+fas
