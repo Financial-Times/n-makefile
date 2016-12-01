@@ -111,9 +111,6 @@ MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see ht
 heroku-cli:
 	@if [ -e Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(MSG_HEROKU_CLI) && exit 1); fi
 
-# a11y:
-# 	@export TEST_URL="local.ft.com:3002"; pa11y-ci
-
 # VERIFY SUB-TASKS
 
 _verify_eslint:
@@ -127,8 +124,11 @@ _verify_scss_lint:
 	@if [ -e .scss-lint.yml ]; then { scss-lint -c ./.scss-lint.yml `$(call GLOB,'*.scss')`; if [ $$? -ne 0 -a $$? -ne 1 ]; then exit 1; fi; $(DONE); } fi
 
 _run_pa11y:
-	@if [ TEST_APP has a number in it ]; @export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci; fi
-	@if [ TEST_APP does not have a number in it]; @export TEST_URL="local.ft.com:3002"; pa11y-ci; fi
+ifdef $(CIRCLE_BRANCH)
+	@export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci;
+else
+	@export TEST_URL=http://local.ft.com:3002; pa11y-ci;
+endif
 
 # DEPLOY SUB-TASKS
 
