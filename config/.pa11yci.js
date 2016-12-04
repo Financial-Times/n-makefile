@@ -27,23 +27,24 @@ const urls = [];
 
 const config = {
 	defaults: {
-		page: {
-			headers: {
-				"Cookie": "next-flags=ads:off,cookieMessage:off; secure=true"
-			}
-		},
+		page: {},
 		timeout: 50000
 	},
-	urls: [],
-	exceptions: []
+	urls: []
 }
+
+
+// Override with project specifics, if any
+const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS || [];
+config.defaults.page.headers = process.env.PA11Y_HEADERS || {Cookie: 'next-flags=ads:off,cookieMessage:off; secure=true'};
+config.defaults.hideElements = process.env.PA11Y_HIDE || ''
 
 smoke.forEach((smokeConfig) => {
 	for (url in smokeConfig.urls) {
 
 		let isException = false;
 
-		config.exceptions.forEach((path) => {
+		exceptions.forEach((path) => {
 			isException = isException || url.indexOf(path) !== -1;
 		});
 
@@ -72,4 +73,3 @@ for (viewport of viewports) {
 }
 
 module.exports = config;
-fas
