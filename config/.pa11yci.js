@@ -21,7 +21,7 @@ const viewports = [
 	}
 ];
 
-const smoke = [{}]//require('./test/smoke.js');
+const smoke = require('./test/smoke.js');
 
 const urls = [];
 
