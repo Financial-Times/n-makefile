@@ -23,8 +23,6 @@ const viewports = [
 
 const smoke = require('./test/smoke.js');
 
-console.log(smoke)
-
 const urls = [];
 
 const config = {
@@ -35,13 +33,10 @@ const config = {
 	urls: []
 }
 
-
 // Override with project specifics, if any
 const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS || [];
 config.defaults.page.headers = process.env.PA11Y_HEADERS || {Cookie: 'next-flags=ads:off,cookieMessage:off; secure=true'};
 config.defaults.hideElements = process.env.PA11Y_HIDE || ''
-
-console.log(config);
 
 smoke.forEach((smokeConfig) => {
 	for (url in smokeConfig.urls) {
@@ -67,7 +62,6 @@ smoke.forEach((smokeConfig) => {
 		urls.push(thisUrl)
 	}
 });
-
 
 for (viewport of viewports) {
 	for (url of urls) {
