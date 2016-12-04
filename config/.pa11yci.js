@@ -34,11 +34,11 @@ const config = {
 }
 
 // Override with project specifics, if any
-const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS || [];
+const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS ? process.env.PA11Y_ROUTE_EXCEPTIONS.split(',') : [];
 config.defaults.page.headers = process.env.PA11Y_HEADERS || {Cookie: 'next-flags=ads:off,cookieMessage:off; secure=true'};
 config.defaults.hideElements = process.env.PA11Y_HIDE || ''
 
-console.log('config-vars exceptions: ', process.env.PA11Y_ROUTE_EXCEPTIONS)
+console.log('config-vars exceptions: ', process.env.PA11Y_ROUTE_EXCEPTIONS, exceptions)
 console.log('config-vars headers: ', process.env.PA11Y_HEADERS)
 console.log('config-vars hidden elements: ', process.env.PA11Y_HIDE)
 
@@ -47,7 +47,7 @@ smoke.forEach((smokeConfig) => {
 
 		let isException = false;
 
-		exceptions.split(',').forEach((path) => {
+		exceptions.forEach((path) => {
 			isException = isException || url.indexOf(path) !== -1;
 		});
 
