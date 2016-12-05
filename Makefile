@@ -124,7 +124,8 @@ _verify_scss_lint:
 	@if [ -e .scss-lint.yml ]; then { scss-lint -c ./.scss-lint.yml `$(call GLOB,'*.scss')`; if [ $$? -ne 0 -a $$? -ne 1 ]; then exit 1; fi; $(DONE); } fi
 
 _run_pa11y:
-ifdef $(CIRCLE_BRANCH)
+	echo $(CIRCLE_BRANCH)
+ifneq ($(CIRCLE_BRANCH),)
 	@export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci;
 else
 	@export TEST_URL=http://local.ft.com:3002; pa11y-ci;
