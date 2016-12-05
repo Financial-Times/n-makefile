@@ -39,7 +39,7 @@ config.defaults.page.headers = process.env.PA11Y_HEADERS || {Cookie: 'next-flags
 config.defaults.hideElements = process.env.PA11Y_HIDE || ''
 
 console.log('config-vars exceptions: ', process.env.PA11Y_ROUTE_EXCEPTIONS, exceptions)
-console.log('config-vars headers: ', process.env.PA11Y_HEADERS)
+console.log('config-vars headers: ', process.env.PA11Y_HEADERS, config.defaults.page.headers)
 console.log('config-vars hidden elements: ', process.env.PA11Y_HIDE)
 
 smoke.forEach((smokeConfig) => {
