@@ -71,6 +71,7 @@ smoke.forEach((smokeConfig) => {
 for (viewport of viewports) {
 	for (url of urls) {
 		url.viewport = viewport;
+		url.verifyPage = process.env.PA11Y_VERIFY_PAGE;
 		config.urls.push(url);
 	}
 }
