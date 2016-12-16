@@ -2,16 +2,8 @@ const viewports = [
 	{
 		width: 1440,
 		height: 1220
-	},
-	{
-		width: 1220,
-		height: 980
-	},
-	{
-		width: 490,
-		height: 740
 	}
-];
+] || process.env.PA11Y_VIEWPORTS;
 
 const smoke = require('./test/smoke.js');
 
