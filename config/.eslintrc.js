@@ -11,7 +11,7 @@ const config = {
 	'rules': {
 		'eqeqeq': 2,
 		'guard-for-in': 2,
-		'new-cap': 2,
+		'new-cap': 0,
 		'no-caller': 2,
 		'no-console': 2,
 		'no-extend-native': 2,
