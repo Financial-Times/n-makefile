@@ -1,10 +1,6 @@
 # Warning, don't edit this file, it's maintained on GitHub and updated by running `make update-tools`
 # Submit PR's here: https://www.github.com/Financial-Times/n-makefile
 
-
-# Setup environment variables
-export $(shell [ -f .env ] && sed 's/=.*//' .env)
-
 # ./node_modules/.bin on the PATH
 export PATH := ./node_modules/.bin:$(PATH)
 
