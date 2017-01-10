@@ -3,7 +3,6 @@
 
 
 # Setup environment variables
-sinclude .env
 export $(shell [ -f .env ] && sed 's/=.*//' .env)
 
 # ./node_modules/.bin on the PATH
@@ -39,9 +38,10 @@ clea%: ## clean: Clean this git repository.
 	@$(DONE)
 
 instal%: ## install: Setup this repository.
-instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env .pa11yci.js webpack.config.js heroku-cli
+instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .pa11yci.js webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
+	@if [ -z $(CIRCLECI) ] && [ ! -e .env ]; then (echo "Note: If this is a development environment, you will likely need to import the project's environment variables by running 'make .env'."); fi
 
 deplo%: ## deploy: Deploy this repository.
 deplo%: _deploy_apex

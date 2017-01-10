@@ -68,11 +68,14 @@ Removes all the uncommited files and folders from the local clone.
 (We hope to get rid of scss-lint as soon as the Node port gains feature parity, and then it'll come through the npm module installation step)
 
 #### Dot files
-E.g. `.env`, `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.js`
+E.g. `.editorconfig`, `.scss-lint.yml`, or `.eslintrc.js`
 
 - By default, no nothing.
 - If a dot file is commited to the repository don't overwrite it — i.e. also do nothing (default behaviour in Makefile).
 - If a dot file is not commited but **is listed in the `.gitignore` file**, download it during `make install`.
+
+##### Note: The `.env` dot file contains private keys. Handle with care.
+Rather than risk generating .env files in different environments, makefile does not invoke the .env target automatically. If you're in a development environment, and you want to import the project's environment variables, You will need to run 'make .env' youself.
 
 ### `assets` and `assets-production`
 
