@@ -56,7 +56,7 @@ asset%: ## assets-production: Build the static assets for production.
 	@if [ -e webpack.config.js ]; then webpack $(if $(findstring assets-production,$@),--bail,--dev); fi
 
 buil%: ## build: Build this repository.
-buil%: ## build: Build this repository for production.
+buil%: ## build-production: Build this repository for production.
 buil%: public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
