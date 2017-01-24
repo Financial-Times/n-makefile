@@ -6,6 +6,7 @@ const config = {
 		'node': true
 	},
 	'parserOptions': {
+		'ecmaVersion': 8,
 		'sourceType': 'module'
 	},
 	'rules': {
