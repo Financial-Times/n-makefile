@@ -140,7 +140,12 @@ _verify_pa11y_testable:
 	@$(DONE)
 
 _run_pa11y:
-	@if [ -e .pa11yci.js ]; then export TEST_URL=$(if ${TEST_APP},"${TEST_APP}.herokuapp.com","http://local.ft.com:3002"); pa11y-ci; fi
+	echo $(CIRCLE_BRANCH)
+ifneq ($(CIRCLE_BRANCH),)
+	@export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci;
+else
+	@export TEST_URL=http://local.ft.com:3002; pa11y-ci;
+endif
 
 # DEPLOY SUB-TASKS
 
