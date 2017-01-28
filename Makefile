@@ -57,7 +57,6 @@ verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testab
 a11%: ## a11y: Check accessibility for this repository.
 a11%: _run_pa11y
 	@$(DONE)
-ally: a11y
 
 asset%: ## assets: Build the static assets.
 asset%: ## assets-production: Build the static assets for production.
