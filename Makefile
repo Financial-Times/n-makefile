@@ -8,6 +8,11 @@ export $(shell [ -f .env ] && sed 's/=.*//' .env)
 $(info Note — An .env file exists. Its contents have been exported as environment variables.)
 endif
 
+# Enforce repo ownership
+ifeq ("$(wildcard ft.yml)","")
+$(error 'Projects making use of n-makefile *must* define an ft.yml file containing the repo owner's details (see any next- repo for required structure)')
+endif
+
 # ./node_modules/.bin on the PATH
 export PATH := ./node_modules/.bin:$(PATH)
 
@@ -24,6 +29,7 @@ VERSION = master
 APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
 CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_NAME)$(if $2,.$2,) -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
+
 
 #
 # META TASKS
