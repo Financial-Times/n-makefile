@@ -64,18 +64,31 @@ asset%: ## assets-production: Build the static assets for production.
 
 buil%: ## build: Build this repository.
 buil%: ## build-production: Build this repository for production.
-buil%: public/__about.json
+buil%: dev-n-ui public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
-watc%: ## watch: Watch for static asset changes.
+watc%: dev-n-ui ## watch: Watch for static asset changes.
 	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
 
 #
 # SUB-TASKS
 #
+
+# Remind developers that if they want to use a local version of n-ui,
+# they need to `export NEXT_APP_SHELL=local`
+dev-n-ui:
+ifeq ($(NODE_ENV),) # Not production
+ifeq ($(CIRCLE_BRANCH),) # Not CircleCI
+ifneq ($(shell grep -s -Fim 1 n-ui bower.json),) # The app is using n-ui
+ifneq ($(NEXT_APP_SHELL),local) # NEXT_APP_SHELL is not set to local
+	$(info Developers: If you want your app to point to n-ui locally, then `export NEXT_APP_SHELL=local`)
+endif
+endif
+endif
+endif
 
 # INSTALL SUB-TASKS
 
