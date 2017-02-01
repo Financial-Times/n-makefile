@@ -10,7 +10,7 @@ endif
 
 # Enforce repo ownership
 ifeq ("$(wildcard ft.yml)","")
-$(error 'Projects making use of n-makefile *must* define an ft.yml file containing the repo owner's details (see any next- repo for required structure)')
+$(error 'Projects making use of n-makefile *must* define an ft.yml file containing the repo owner\'s details (see any next- repo for required structure)')
 endif
 
 # ./node_modules/.bin on the PATH
@@ -22,6 +22,7 @@ SHELL := /bin/bash
 # Some handy utilities
 GLOB = git ls-files -z $1 | tr '\0' '\n' | xargs -I {} find {} ! -type l
 NPM_INSTALL = npm prune --production=false && npm install
+YARN_INSTALL = yarn install --ignore-scripts --prefer-offline
 BOWER_INSTALL = bower prune && bower install --config.registry.search=http://registry.origami.ft.com --config.registry.search=https://bower.herokuapp.com
 JSON_GET_VALUE = grep $1 | head -n 1 | sed 's/[," ]//g' | cut -d : -f 2
 IS_GIT_IGNORED = grep -q $(if $1, $1, $@) .gitignore
@@ -47,6 +48,10 @@ clea%: ## clean: Clean this git repository.
 	@$(DONE)
 
 instal%: ## install: Setup this repository.
+install-yar%: node_modules_yarn bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .env .pa11yci.js webpack.config.js heroku-cli
+	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
+	@$(DONE)
+	@if [ -z $(CIRCLECI) ] && [ ! -e .env ]; then (echo "Note: If this is a development environment, you will likely need to import the project's environment variables by running 'make .env'."); fi
 instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .pa11yci.js webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
 	@$(DONE)
@@ -92,6 +97,10 @@ node_modules: package.json
 # Regular bower install
 bower_components: bower.json
 	@if [ -e bower.json ]; then $(BOWER_INSTALL) && $(DONE); fi
+
+# Yarn install
+node_modules_yarn: package.json
+	@if [ -e package.json ]; then $(YARN_INSTALL) && $(DONE); fi
 
 # These tasks have been intentionally left blank
 package.json:
