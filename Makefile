@@ -86,11 +86,11 @@ watc%: dev-n-ui ## watch: Watch for static asset changes.
 ci-n-ui-check:
 # In CircleCI
 ifneq ($(CIRCLE_BUILD_NUM),)
- # The app is using n-ui
+# The app is using n-ui
 ifneq ($(shell grep -s -Fim 1 n-ui bower.json),)
- # versions in package.json and bower.json are not equal
+# versions in package.json and bower.json are not equal
 ifneq ($(shell grep -s -Fim 1 version bower_components/n-ui/.bower.json),$(shell grep -s -Fim 1 version node_modules/@financial-times/n-ui/package.json))
-$(error 'Projects using n-ui must maintain parity between versions. Rebuild without cache and update your bower.json and package.json if necessary')
+	$(error 'Projects using n-ui must maintain parity between versions. Rebuild without cache and update your bower.json and package.json if necessary')
 endif
 endif
 endif
