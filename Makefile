@@ -70,18 +70,32 @@ asset%: ## assets-production: Build the static assets for production.
 
 buil%: ## build: Build this repository.
 buil%: ## build-production: Build this repository for production.
-buil%: dev-n-ui public/__about.json
+buil%: n-ui-checks public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
-watc%: dev-n-ui ## watch: Watch for static asset changes.
+watc%: n-ui-checks ## watch: Watch for static asset changes.
 	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
 
 #
 # SUB-TASKS
 #
+
+n-ui-checks: dev-n-ui ci-n-ui
+
+ci-n-ui:
+# In CircleCI
+ifneq ($(CIRCLE_BUILD_NUM),)
+ # The app is using n-ui
+ifneq ($(shell grep -s -Fim 1 n-ui bower.json),)
+ # versions in package.json and bower.json are not equal
+ifneq ($(shell grep -s -Fim 1 version bower_components/n-ui/.bower.json),$(shell grep -s -Fim 1 version node_modules/@financial-times/n-ui/package.json))
+$(error 'Projects using n-ui must maintain parity between versions. Rebuild without cache and update your bower.json and package.json if necessary')
+endif
+endif
+endif
 
 # Remind developers that if they want to use a local version of n-ui,
 # they need to `export NEXT_APP_SHELL=local`
