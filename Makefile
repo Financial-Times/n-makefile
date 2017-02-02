@@ -57,7 +57,7 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 verif%: ## verify: Verify this repository.
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
+verif%: ci-n-ui-check _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
 	@$(DONE)
 
 a11%: ## a11y: Check accessibility for this repository.
@@ -70,12 +70,12 @@ asset%: ## assets-production: Build the static assets for production.
 
 buil%: ## build: Build this repository.
 buil%: ## build-production: Build this repository for production.
-buil%: n-ui-checks public/__about.json
+buil%: dev-n-ui public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
-watc%: n-ui-checks ## watch: Watch for static asset changes.
+watc%: dev-n-ui ## watch: Watch for static asset changes.
 	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
 
@@ -83,9 +83,7 @@ watc%: n-ui-checks ## watch: Watch for static asset changes.
 # SUB-TASKS
 #
 
-n-ui-checks: dev-n-ui ci-n-ui
-
-ci-n-ui:
+ci-n-ui-check:
 # In CircleCI
 ifneq ($(CIRCLE_BUILD_NUM),)
  # The app is using n-ui
