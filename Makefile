@@ -57,7 +57,7 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 verif%: ## verify: Verify this repository.
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
+verif%: ci-n-ui-check _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
 	@$(DONE)
 
 a11%: ## a11y: Check accessibility for this repository.
@@ -82,6 +82,18 @@ watc%: dev-n-ui ## watch: Watch for static asset changes.
 #
 # SUB-TASKS
 #
+
+ci-n-ui-check:
+# In CircleCI
+ifneq ($(CIRCLE_BUILD_NUM),)
+ # The app is using n-ui
+ifneq ($(shell grep -s -Fim 1 n-ui bower.json),)
+ # versions in package.json and bower.json are not equal
+ifneq ($(shell grep -s -Fim 1 version bower_components/n-ui/.bower.json),$(shell grep -s -Fim 1 version node_modules/@financial-times/n-ui/package.json))
+$(error 'Projects using n-ui must maintain parity between versions. Rebuild without cache and update your bower.json and package.json if necessary')
+endif
+endif
+endif
 
 # Remind developers that if they want to use a local version of n-ui,
 # they need to `export NEXT_APP_SHELL=local`
