@@ -45,7 +45,8 @@ smoke.forEach((smokeConfig) => {
 		}
 
 		if (smokeConfig.headers) {
-			thisUrl.headers = smokeConfig.headers
+			thisUrl.page = {};
+			thisUrl.page.headers = smokeConfig.headers
 		}
 
 		urls.push(thisUrl)
