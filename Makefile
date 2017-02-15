@@ -175,7 +175,9 @@ _verify_pa11y_testable:
 _run_pa11y:
 	echo $(CIRCLE_BRANCH)
 ifneq ($(CIRCLE_BRANCH),)
-	@export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci;
+	@export TEST_URL=${TEST_APP}; \
+	echo ${TEST_APP} | grep http -s || export TEST_URL=http://${TEST_APP}.herokuapp.com; \
+	pa11y-ci;
 else
 	@export TEST_URL=http://local.ft.com:3002; pa11y-ci;
 endif
