@@ -25,7 +25,6 @@ config.defaults.page.headers['FT-Next-Backend-Key'] = process.env.FT_NEXT_BACKEN
 config.defaults.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HIDE},${config.defaults.hideElements}` : config.defaults.hideElements
 
 console.log('config-vars exceptions: ', process.env.PA11Y_ROUTE_EXCEPTIONS, exceptions);
-console.log('config-vars headers: ', process.env.PA11Y_HEADERS, config.defaults.page.headers);
 console.log('config-vars hidden elements: ', process.env.PA11Y_HIDE, config.defaults.hideElements);
 
 smoke.forEach((smokeConfig) => {
