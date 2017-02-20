@@ -13,7 +13,7 @@ const config = {
 	defaults: {
 		page: {},
 		timeout: 50000,
-		hideElements: 'iframe[src*=google],iframe[src*=proxy]',
+		hideElements: 'iframe[src*=google],iframe[src*=proxy]'
 	},
 	urls: []
 }
