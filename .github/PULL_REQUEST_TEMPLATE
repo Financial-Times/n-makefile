@@ -1,0 +1,1 @@
+A polite reminder that when releasing n-makefile don't use semver - use a tag of the form v2, v3 etc

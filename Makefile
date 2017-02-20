@@ -2,10 +2,18 @@
 # It's maintained on GitHub. Submit pull requests here: https://www.github.com/Financial-Times/n-makefile
 
 # Export environment variables if a .env file is present.
+ifeq ($(ENV_EXPORTED),) # ENV vars not yet exported
 ifneq ("$(wildcard .env)","")
 sinclude .env
 export $(shell [ -f .env ] && sed 's/=.*//' .env)
+export ENV_EXPORTED=true
 $(info Note — An .env file exists. Its contents have been exported as environment variables.)
+endif
+endif
+
+# Enforce repo ownership
+ifeq ("$(wildcard ft.yml)","")
+$(error 'Projects making use of n-makefile *must* define an ft.yml file containing the repo owner's details (see any next- repo for required structure)')
 endif
 
 # ./node_modules/.bin on the PATH
@@ -24,6 +32,7 @@ VERSION = master
 APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
 CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_NAME)$(if $2,.$2,) -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
+
 
 #
 # META TASKS
@@ -51,7 +60,7 @@ deplo%: _deploy_apex
 	@$(DONE)
 
 verif%: ## verify: Verify this repository.
-verif%: _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
+verif%: ci-n-ui-check _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
 	@$(DONE)
 
 a11%: ## a11y: Check accessibility for this repository.
@@ -64,18 +73,43 @@ asset%: ## assets-production: Build the static assets for production.
 
 buil%: ## build: Build this repository.
 buil%: ## build-production: Build this repository for production.
-buil%: public/__about.json
+buil%: dev-n-ui public/__about.json
 	@if [ -e webpack.config.js ]; then $(MAKE) $(subst build,assets,$@); fi
 	@if [ -e Procfile ] && [ "$(findstring build-production,$@)" == "build-production" ]; then haikro build; fi
 	@$(DONE)
 
-watc%: ## watch: Watch for static asset changes.
+watc%: dev-n-ui ## watch: Watch for static asset changes.
 	@if [ -e webpack.config.js ]; then webpack --watch --dev; fi
 	@$(DONE)
 
 #
 # SUB-TASKS
 #
+
+ci-n-ui-check:
+# In CircleCI
+ifneq ($(CIRCLE_BUILD_NUM),)
+# The app is using n-ui
+ifneq ($(shell grep -s -Fim 1 n-ui bower.json),)
+# versions in package.json and bower.json are not equal
+ifneq ($(shell awk '$$1 == "\"version\":" {print $$2}' bower_components/n-ui/.bower.json | sed s/,//),$(shell awk '$$1 == "\"version\":" {print $$2}'  node_modules/@financial-times/n-ui/package.json | sed s/,//))
+	$(error 'Projects using n-ui must maintain parity between versions. Rebuild without cache and update your bower.json and package.json if necessary')
+endif
+endif
+endif
+
+# Remind developers that if they want to use a local version of n-ui,
+# they need to `export NEXT_APP_SHELL=local`
+dev-n-ui:
+ifeq ($(NODE_ENV),) # Not production
+ifeq ($(CIRCLE_BRANCH),) # Not CircleCI
+ifneq ($(shell grep -s -Fim 1 n-ui bower.json),) # The app is using n-ui
+ifneq ($(NEXT_APP_SHELL),local) # NEXT_APP_SHELL is not set to local
+	$(info Developers: If you want your app to point to n-ui locally, then `export NEXT_APP_SHELL=local`)
+endif
+endif
+endif
+endif
 
 # INSTALL SUB-TASKS
 
@@ -141,7 +175,9 @@ _verify_pa11y_testable:
 _run_pa11y:
 	echo $(CIRCLE_BRANCH)
 ifneq ($(CIRCLE_BRANCH),)
-	@export TEST_URL=http://${TEST_APP}.herokuapp.com; pa11y-ci;
+	@export TEST_URL=${TEST_APP}; \
+	echo ${TEST_APP} | grep http -s || export TEST_URL=http://${TEST_APP}.herokuapp.com; \
+	pa11y-ci;
 else
 	@export TEST_URL=http://local.ft.com:3002; pa11y-ci;
 endif

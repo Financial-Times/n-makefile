@@ -30,8 +30,9 @@ console.log('headers:', config.defaults.page.headers);
 console.log('PA11Y_HIDE:', process.env.PA11Y_HIDE);
 console.log('config.hideElements:', config.hideElements);
 
-// Don't console.log headers once backend key is added
+// Don't console.log headers once backend key is added to the header object
 config.defaults.page.headers['FT-Next-Backend-Key'] = process.env.FT_NEXT_BACKEND_KEY;
+
 
 smoke.forEach((smokeConfig) => {
 	for (url in smokeConfig.urls) {
