@@ -22,7 +22,7 @@ const config = {
 const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS ? process.env.PA11Y_ROUTE_EXCEPTIONS.split(',') : [];
 config.defaults.page.headers = process.env.PA11Y_HEADERS ? JSON.parse(process.env.PA11Y_HEADERS) : {Cookie: 'next-flags=ads:off,cookieMessage:off; secure=true'};
 config.defaults.page.headers['FT-Next-Backend-Key'] = process.env.FT_NEXT_BACKEND_KEY;
-config.defaults.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HIDE},${config.defaults.hideElements}` : config.defaults.hideElements
+config.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HIDE},${config.hideElements}` : config.hideElements
 
 console.log('config-vars exceptions: ', process.env.PA11Y_ROUTE_EXCEPTIONS, exceptions);
 console.log('config-vars hidden elements: ', process.env.PA11Y_HIDE, config.defaults.hideElements);
