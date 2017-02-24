@@ -148,7 +148,7 @@ ENV_MSG_CANT_GET = "Error: Cannot get config vars for this service. Check you ar
 	@if [[ $(shell grep --count *.env* .gitignore) -eq 0 ]]; then (echo $(ENV_MSG_IGNORE_ENV) && exit 1); fi
 	@if [ ! -e package.json ]; then (echo $(ENV_MSG_PACKAGE_JSON) && exit 1); fi
 	@if [ ! -z $(CIRCLECI) ]; then (echo $(ENV_MSG_CIRCLECI) && exit 1); fi
-	@$(call CONFIG_VARS,development,env) > .env && sed -i -r 's/="(.*)"/=\1/' .env && $(DONE) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1);
+	@$(call CONFIG_VARS,development,env) > .env && sed -i'' -r -e 's/="(.*)"/=\1/' .env && $(DONE) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1);
 
 MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete Procfile."
 heroku-cli:
