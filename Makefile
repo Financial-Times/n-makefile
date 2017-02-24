@@ -214,6 +214,7 @@ hel%: ## help: Show this help message.
 	@echo "targets:"
 	@grep -Eh '^.+:\ ##\ .+' ${MAKEFILE_LIST} | cut -d ' ' -f '3-' | column -t -s ':'
 
+# Wrapper for make deploy which prevents it running when build is a nightly
 deploy-by-day:
 ifeq ($(FT_NIGHTLY_BUILD),)
 	$(MAKE) deploy
