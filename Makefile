@@ -14,6 +14,8 @@ endif
 # Enforce repo ownership
 ifeq ("$(wildcard ft.yml)","")
 $(error 'Projects making use of n-makefile *must* define an ft.yml file containing the repo owner's details (see any next- repo for required structure)')
+$(error 'If you are creating a project not to be maintained by the next team please feel free to copy what you need from our build tools but don't add an ft.yml.')
+$(error 'Integrating with our tooling may result in unwanted effects e.g. nightly builds, slack alerts, emails etc')
 endif
 
 # ./node_modules/.bin on the PATH
