@@ -34,7 +34,7 @@ VERSION = master
 APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
 CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_NAME)$(if $2,.$2,) -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
-IS_USER_FACING = `find . -print | grep '\.html'`
+IS_USER_FACING = `find . -type d \( -path ./bower_components -o -path ./node_modules \) -prune -o -name '*.html' -print`
 MAKEFILE_HAS_ALLY = `grep -rli "make a11y" Makefile`
 
 #
@@ -174,7 +174,7 @@ VERIFY_MSG_NO_PALLY = "\n**** Error ****\nIt looks like your code is user-facing
 #check if project has HTML and missing make a11y command
 #check if project has demo app if there's a make a11y command
 _verify_pa11y_testable:
-	@if [ $(IS_USER_FACING) ] && [ -z $(MAKEFILE_HAS_ALLY) ] && [ ! ${IGNORE_ALLY} ]; then (printf $(VERIFY_MSG_NO_PALLY) && exit 1); fi
+	@if [ "$(IS_USER_FACING)" ] && [ -z $(MAKEFILE_HAS_ALLY) ] && [ ! ${IGNORE_ALLY} ]; then (printf $(VERIFY_MSG_NO_PALLY) && exit 1); fi
 	@if [ ! -d server ] && [ -d templates ] && [ ! -f demos/app.js ]; then (echo $(VERIFY_MSG_NO_DEMO) && exit 1); fi
 	@$(DONE)
 
