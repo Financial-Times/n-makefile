@@ -52,6 +52,10 @@ smoke.forEach((smokeConfig) => {
 			url: process.env.TEST_URL + url
 		}
 
+		if(process.env.TEST_URL.includes('local')) {
+			thisUrl.screenCapture = './pa11y_screenCapture/' + url + '.png';
+		}
+
 		if (smokeConfig.headers) {
 			thisUrl.page = {};
 			thisUrl.page.headers = smokeConfig.headers
