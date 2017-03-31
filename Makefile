@@ -108,7 +108,7 @@ ifeq ($(NODE_ENV),) # Not production
 ifeq ($(CIRCLE_BRANCH),) # Not CircleCI
 ifneq ($(shell grep -s -Fim 1 n-ui bower.json),) # The app is using n-ui
 ifneq ($(NEXT_APP_SHELL),local) # NEXT_APP_SHELL is not set to local
-	$(info Developers: If you want your app to point to n-ui loca11y, then `export NEXT_APP_SHELL=local`)
+	$(info Developers: If you want your app to point to n-ui locally, then `export NEXT_APP_SHELL=local`)
 endif
 endif
 endif
@@ -124,7 +124,7 @@ node_modules: package.json
 bower_components: bower.json
 	@if [ -e bower.json ]; then $(BOWER_INSTALL) && $(DONE); fi
 
-# These tasks have been intentiona11y left blank
+# These tasks have been intentionally left blank
 package.json:
 bower.json:
 
