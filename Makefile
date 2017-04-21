@@ -66,6 +66,11 @@ verif%: ## verify: Verify this repository.
 verif%: ci-n-ui-check _verify_lintspaces _verify_eslint _verify_scss_lint _verify_pa11y_testable
 	@$(DONE)
 
+forma%: ## format: Format the Javascript files.
+forma%:
+	@if [ -x "$(shell which prettier)" ]; then $(call GLOB,'*.js') | xargs prettier --write; fi
+	@$(DONE)
+
 a11%: ## a11y: Check accessibility for this repository.
 a11%: _run_pa11y
 	@$(DONE)
