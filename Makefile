@@ -221,6 +221,7 @@ hel%: ## help: Show this help message.
 	@grep -Eh '^.+:\ ##\ .+' ${MAKEFILE_LIST} | cut -d ' ' -f '3-' | column -t -s ':'
 
 # Wrapper for make deploy which prevents it running when build is a nightly
+# Nightly builds are trigger by next-rebuild-bot
 deploy-by-day:
 ifeq ($(FT_NIGHTLY_BUILD),)
 	$(MAKE) deploy
