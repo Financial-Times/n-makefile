@@ -162,7 +162,12 @@ ENV_MSG_CANT_GET = "Error: Cannot get config vars for this service. Check you ar
 # - the tail command removes the first three lines (vault metadata)
 # - the 1st sed command removes the last line (empty line)
 # - the 2nd sed command changes remaining lines to key=value format
-	@vault auth --method github && vault read secret/teams/next/$(APP_NAME)/development | tail -n +4 | sed -e '$$ d' | sed -E 's/^([^ ]*)[[:blank:]]*([^ ].*)$$/\1=\2/' > .env
+	@vault auth --method github \
+		&& vault read secret/teams/next/$(APP_NAME)/development \
+		| tail -n +4 \
+		| sed -e '$$ d' \
+		| sed -E 's/^([^ ]*)[[:blank:]]*([^ ].*)$$/\1=\2/' \
+		> .env
 	@$(DONE)
 
 MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete Procfile."
