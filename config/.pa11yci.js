@@ -85,7 +85,7 @@ smoke.forEach((smokeConfig) => {
 			let fullCookie;
 			let fullFlags;
 
-			// Merge the headers header
+			// Merge the headers
 			thisUrl.page.headers = Object.assign({}, config.defaults.page.headers, smokeConfig.headers);
 
 			// concatenate any test-specific cookies
