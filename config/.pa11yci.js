@@ -23,14 +23,15 @@ const DEFAULT_FLAGS = 'ads:off,sourcepoint:off,cookieMessage:off';
 // Add any global config (inc headers) here
 const config = {
 	defaults: {
-		page: {},
+		page: {
+			headers: {
+				'Cookie': DEFAULT_COOKIE,
+				'FT-Flags': DEFAULT_FLAGS
+			}
+		},
 		timeout: 50000,
 		hideElements: 'iframe[src*=google],iframe[src*=proxy]',
-		rules: ['Principle1.Guideline1_3.1_3_1_AAA'],
-		headers: {
-			'Cookie': DEFAULT_COOKIE,
-			'FT-Flags': DEFAULT_FLAGS
-		}
+		rules: ['Principle1.Guideline1_3.1_3_1_AAA']
 	},
 	urls: []
 }
