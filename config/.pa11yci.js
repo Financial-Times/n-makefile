@@ -9,12 +9,28 @@ const smoke = require('./test/smoke.js');
 
 const urls = [];
 
+/**
+ * Headers can be set:
+ * - globally for all apps, in config.defaults.page.headers here
+ * - per test, in smoke.js
+ * Headers objects will be merged, cookies and flags will be concatenated
+ * No flags allowed inside the cookie for easier merging: use the FT-Flags header instead
+ */
+
+const DEFAULT_COOKIE = 'secure=true';
+const DEFAULT_FLAGS = 'ads:off,sourcepoint:off,cookieMessage:off';
+
+// Add any global config (inc headers) here
 const config = {
 	defaults: {
 		page: {},
 		timeout: 50000,
 		hideElements: 'iframe[src*=google],iframe[src*=proxy]',
-		rules: ['Principle1.Guideline1_3.1_3_1_AAA']
+		rules: ['Principle1.Guideline1_3.1_3_1_AAA'],
+		headers: {
+			'Cookie': DEFAULT_COOKIE,
+			'FT-Flags': DEFAULT_FLAGS
+		}
 	},
 	urls: []
 }
@@ -28,25 +44,6 @@ const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS ? process.env.PA11Y_ROUTE_
 // set per-project in PA11Y_HIDE in config-vars
 // Use with caution. May break the experience for users.
 config.defaults.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HIDE},${config.defaults.hideElements}` : config.defaults.hideElements;
-
-
-/**
- * Headers can be set:
- * - globally for all apps, in globalHeaders here
- * - per test, in smoke.js
- * Headers objects will be merged, cookies will be concatenated
- */
-
-const DEFAULT_COOKIE = 'secure=true';
-const DEFAULT_FLAGS = 'ads:off,sourcepoint:off,cookieMessage:off'
-
-// Add any global headers here
-let globalHeaders = {
-	'Cookie': DEFAULT_COOKIE,
-	'FT-Flags': DEFAULT_FLAGS
-};
-
-config.defaults.page.headers = globalHeaders;
 
 console.log('PA11Y_ROUTE_EXCEPTIONS:', process.env.PA11Y_ROUTE_EXCEPTIONS);
 console.log('exceptions:', exceptions);
