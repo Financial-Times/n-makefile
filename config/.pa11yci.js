@@ -32,34 +32,21 @@ config.defaults.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HID
 
 /**
  * Headers can be set:
- * - globally for all apps, in builtHeaders here
- * - per app, in PA11Y_HEADERS in config-vars
+ * - globally for all apps, in globalHeaders here
  * - per test, in smoke.js
  * Headers objects will be merged, cookies will be concatenated
  */
 
-const DEFAULT_COOKIE = 'next-flags=ads:off,sourcepoint:off,cookieMessage:off; secure=true';
-let builtHeaders = {};
+const DEFAULT_COOKIE = 'secure=true';
+const DEFAULT_FLAGS = 'ads:off,sourcepoint:off,cookieMessage:off'
 
-// per-app headers
-if (process.env.PA11Y_HEADERS) {
+// Add any global headers here
+let globalHeaders = {
+	'Cookie': DEFAULT_COOKIE,
+	'FT-Flags': DEFAULT_FLAGS
+};
 
-	builtHeaders = Object.assign({}, builtHeaders, JSON.parse(process.env.PA11Y_HEADERS));
-
-	// concatenate any app-specific cookies
-	if (builtHeaders.Cookie) {
-		builtHeaders.Cookie = builtHeaders.Cookie + ',' + DEFAULT_COOKIE;
-	}
-}
-else {
-
-	// use the globaly cookies only if nothing app-specific
-	builtHeaders = {
-		Cookie: DEFAULT_COOKIE
-	};
-}
-
-config.defaults.page.headers = builtHeaders;
+config.defaults.page.headers = globalHeaders;
 
 console.log('PA11Y_ROUTE_EXCEPTIONS:', process.env.PA11Y_ROUTE_EXCEPTIONS);
 console.log('exceptions:', exceptions);
@@ -98,17 +85,31 @@ smoke.forEach((smokeConfig) => {
 			thisUrl.page = {};
 
 			let fullCookie;
-
-			// concatenate any test-specific cookies
-			if (smokeConfig.headers.Cookie) {
-				fullCookie = smokeConfig.headers.Cookie + ',' + config.defaults.page.headers.Cookie;
-			}
+			let fullFlags;
 
 			// Merge the headers header
 			thisUrl.page.headers = Object.assign({}, config.defaults.page.headers, smokeConfig.headers);
 
-			// Set the concatenated cookie
-			thisUrl.page.headers.Cookie = fullCookie;
+			// concatenate any test-specific cookies
+			if (smokeConfig.headers.Cookie) {
+				console.log('• merging cookies...')
+
+				// Keep flags out of the cookie for easier merging
+				if (smokeConfig.headers.Cookie.indexOf('flags') !== -1) {
+					throw Error('please don\'t set any flags inside the Cookie. Use the \'FT-Flags\' header');
+				}
+
+				// Set the concatenated cookies
+				thisUrl.page.headers.Cookie = smokeConfig.headers.Cookie + '; ' + config.defaults.page.headers.Cookie;
+			}
+
+			// concatenate any test-specific flags
+			if (smokeConfig.headers['FT-Flags']) {
+				console.log('• merging flags...')
+
+				// Set the concatenated flags
+				thisUrl.page.headers['FT-Flags'] = smokeConfig.headers['FT-Flags'] + ',' + config.defaults.page.headers['FT-Flags'];
+			}
 		}
 
 		urls.push(thisUrl)
@@ -121,5 +122,8 @@ for (let viewport of viewports) {
 		config.urls.push(url);
 	}
 }
+
+
+console.log('config', JSON.stringify(config, null, 2))
 
 module.exports = config;
