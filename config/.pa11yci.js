@@ -39,14 +39,12 @@ config.defaults.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HID
  */
 
 const DEFAULT_COOKIE = 'next-flags=ads:off,sourcepoint:off,cookieMessage:off; secure=true';
-let builtHeaders = {
-	global: 'header'
-};
+let builtHeaders = {};
 
 // per-app headers
 if (process.env.PA11Y_HEADERS) {
 
-	builtHeaders = Object.assign({},builtHeaders, JSON.parse(process.env.PA11Y_HEADERS));
+	builtHeaders = Object.assign({}, builtHeaders, JSON.parse(process.env.PA11Y_HEADERS));
 
 	// concatenate any app-specific cookies
 	if (builtHeaders.Cookie) {
@@ -54,6 +52,8 @@ if (process.env.PA11Y_HEADERS) {
 	}
 }
 else {
+
+	// use the globaly cookies only if nothing app-specific
 	builtHeaders = {
 		Cookie: DEFAULT_COOKIE
 	};
@@ -80,12 +80,17 @@ smoke.forEach((smokeConfig) => {
 		exceptions.forEach((path) => {
 			isException = isException || url.indexOf(path) !== -1;
 		});
+
 		if (smokeConfig.urls[url] !== 200 || url === '/__health' || isException) {
 			continue;
 		}
 
 		const thisUrl = {
 			url: process.env.TEST_URL + url
+		}
+
+		if (process.env.TEST_URL.includes('local')) {
+			thisUrl.screenCapture = './pa11y_screenCapture/' + url + '.png';
 		}
 
 		// Do we have test-specific headers?
