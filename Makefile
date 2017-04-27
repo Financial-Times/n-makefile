@@ -154,7 +154,7 @@ ENV_MSG_CANT_GET = "Error: Cannot get config vars for this service. Check you ar
 	@$(call CONFIG_VARS,development,env) > .env && perl -pi -e 's/="(.*)"/=\1/' .env && $(DONE) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1);
 
 # replace .env with this .env2 when you want to use the vault instead of config-vars
-.env2:
+.env-vault:
 	@if [[ $(shell grep --count *.env* .gitignore) -eq 0 ]]; then (echo $(ENV_MSG_IGNORE_ENV) && exit 1); fi
 	@if [ ! -e package.json ]; then (echo $(ENV_MSG_PACKAGE_JSON) && exit 1); fi
 	@if [ ! -z $(CIRCLECI) ]; then (echo $(ENV_MSG_CIRCLECI) && exit 1); fi
