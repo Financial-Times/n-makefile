@@ -92,7 +92,7 @@ smoke.forEach((smokeConfig) => {
 
 			// concatenate any test-specific cookies
 			if (smokeConfig.headers.Cookie) {
-				console.log('• merging cookies...')
+				console.log('• merging cookies...');
 
 				// Keep flags out of the cookie for easier merging
 				if (smokeConfig.headers.Cookie.indexOf('flags') !== -1) {
@@ -105,14 +105,14 @@ smoke.forEach((smokeConfig) => {
 
 			// concatenate any test-specific flags
 			if (smokeConfig.headers['FT-Flags']) {
-				console.log('• merging flags...')
+				console.log('• merging flags...');
 
 				// Set the concatenated flags
 				thisUrl.page.headers['FT-Flags'] = smokeConfig.headers['FT-Flags'] + ',' + config.defaults.page.headers['FT-Flags'];
 			}
 		}
 
-		urls.push(thisUrl)
+		urls.push(thisUrl);
 	}
 });
 
@@ -122,8 +122,5 @@ for (let viewport of viewports) {
 		config.urls.push(url);
 	}
 }
-
-
-console.log('config', JSON.stringify(config, null, 2))
 
 module.exports = config;
