@@ -73,7 +73,7 @@ config.defaults.page.headers['FT-Next-Backend-Key'] = process.env.FT_NEXT_BACKEN
 
 
 smoke.forEach((smokeConfig) => {
-	for (url in smokeConfig.urls) {
+	for (let url in smokeConfig.urls) {
 
 		let isException = false;
 
@@ -110,8 +110,8 @@ smoke.forEach((smokeConfig) => {
 	}
 });
 
-for (viewport of viewports) {
-	for (url of urls) {
+for (let viewport of viewports) {
+	for (let url of urls) {
 		url.viewport = viewport;
 		config.urls.push(url);
 	}
