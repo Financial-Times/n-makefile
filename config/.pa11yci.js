@@ -19,10 +19,47 @@ const config = {
 	urls: []
 }
 
-// Override with project specifics, if any
+
+// What routes returning 200 in smoke.js should we not test?
+// set per-project in PA11Y_ROUTE_EXCEPTIONS in config-vars
 const exceptions = process.env.PA11Y_ROUTE_EXCEPTIONS ? process.env.PA11Y_ROUTE_EXCEPTIONS.split(',') : [];
-config.defaults.page.headers = process.env.PA11Y_HEADERS ? JSON.parse(process.env.PA11Y_HEADERS) : {Cookie: 'next-flags=ads:off,sourcepoint:off,cookieMessage:off; secure=true'};
+
+// What elements should we not run pa11y on (i.e. google ad iFrames)
+// set per-project in PA11Y_HIDE in config-vars
+// Use with caution. May break the experience for users.
 config.defaults.hideElements = process.env.PA11Y_HIDE ? `${process.env.PA11Y_HIDE},${config.defaults.hideElements}` : config.defaults.hideElements;
+
+
+/**
+ * Headers can be set:
+ * - globally for all apps, in builtHeaders here
+ * - per app, in PA11Y_HEADERS in config-vars
+ * - per test, in smoke.js
+ * Headers objects will be merged, cookies will be concatenated
+ */
+
+const DEFAULT_COOKIE = 'next-flags=ads:off,sourcepoint:off,cookieMessage:off; secure=true';
+let builtHeaders = {
+	global: 'header'
+};
+
+// per-app headers
+if (process.env.PA11Y_HEADERS) {
+
+	builtHeaders = Object.assign({},builtHeaders, JSON.parse(process.env.PA11Y_HEADERS));
+
+	// concatenate any app-specific cookies
+	if (builtHeaders.Cookie) {
+		builtHeaders.Cookie = builtHeaders.Cookie + ',' + DEFAULT_COOKIE;
+	}
+}
+else {
+	builtHeaders = {
+		Cookie: DEFAULT_COOKIE
+	};
+}
+
+config.defaults.page.headers = builtHeaders;
 
 console.log('PA11Y_ROUTE_EXCEPTIONS:', process.env.PA11Y_ROUTE_EXCEPTIONS);
 console.log('exceptions:', exceptions);
@@ -43,7 +80,6 @@ smoke.forEach((smokeConfig) => {
 		exceptions.forEach((path) => {
 			isException = isException || url.indexOf(path) !== -1;
 		});
-
 		if (smokeConfig.urls[url] !== 200 || url === '/__health' || isException) {
 			continue;
 		}
@@ -52,13 +88,22 @@ smoke.forEach((smokeConfig) => {
 			url: process.env.TEST_URL + url
 		}
 
-		if(process.env.TEST_URL.includes('local')) {
-			thisUrl.screenCapture = './pa11y_screenCapture/' + url + '.png';
-		}
-
+		// Do we have test-specific headers?
 		if (smokeConfig.headers) {
 			thisUrl.page = {};
-			thisUrl.page.headers = smokeConfig.headers
+
+			let fullCookie;
+
+			// concatenate any test-specific cookies
+			if (smokeConfig.headers.Cookie) {
+				fullCookie = smokeConfig.headers.Cookie + ',' + config.defaults.page.headers.Cookie;
+			}
+
+			// Merge the headers header
+			thisUrl.page.headers = Object.assign({}, config.defaults.page.headers, smokeConfig.headers);
+
+			// Set the concatenated cookie
+			thisUrl.page.headers.Cookie = fullCookie;
 		}
 
 		urls.push(thisUrl)
