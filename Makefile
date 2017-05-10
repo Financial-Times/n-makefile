@@ -35,7 +35,7 @@ APP_NAME = $(shell cat package.json 2>/dev/null | $(call JSON_GET_VALUE,name))
 DONE = echo ✓ $@ done
 CONFIG_VARS = curl -fsL https://ft-next-config-vars.herokuapp.com/$1/$(call APP_NAME)$(if $2,.$2,) -H "Authorization: `heroku config:get APIKEY --app ft-next-config-vars`"
 IS_USER_FACING = `find . -type d \( -path ./bower_components -o -path ./node_modules \) -prune -o -name '*.html' -print`
-MAKEFILE_HAS_A11Y = `grep -rli "make a11y" Makefile`
+MAKEFILE_HAS_A11Y = `grep -rli "make a11y\|a11y:" Makefile `
 
 #
 # META TASKS
