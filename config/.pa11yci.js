@@ -32,7 +32,7 @@ const config = {
 			}
 		},
 		timeout: 50000,
-		wait: 1000,
+		wait: 300 || process.env.PA11Y_WAIT,
 		hideElements: 'iframe[src*=google],iframe[src*=proxy]',
 		rules: ['Principle1.Guideline1_3.1_3_1_AAA']
 	},
@@ -121,7 +121,15 @@ for (let viewport of viewports) {
 
 		if (process.env.TEST_URL.includes('local')) {
 			const path = resultUrl.url.substring(resultUrl.url.lastIndexOf('/'));
-			resultUrl.screenCapture = `./pa11y_screenCapture/${viewport.width}x${viewport.height}/${path || 'root'}.png`;
+
+			let appFlags = 'no-flags';
+
+			if (resultUrl.page && resultUrl.page.headers) {
+				const flags = resultUrl.page.headers['FT-Flags'];
+				appFlags = flags.substring(0, flags.indexOf(DEFAULT_FLAGS) - 1);
+			}
+
+			resultUrl.screenCapture = `./pa11y_screenCapture/${viewport.width}x${viewport.height}/${appFlags}/${path || 'root'}.png`;
 
 		}
 
