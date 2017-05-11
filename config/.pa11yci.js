@@ -114,12 +114,12 @@ smoke.forEach((smokeConfig) => {
 });
 
 for (let viewport of viewports) {
-
 	for (let url of urls) {
 
 		const resultUrl = extend(true, {page: {viewport: viewport}}, url);
 
 		if (process.env.TEST_URL.includes('local')) {
+
 			const path = resultUrl.url.substring(resultUrl.url.lastIndexOf('/'));
 
 			let appFlags = 'no-flags';
@@ -128,11 +128,8 @@ for (let viewport of viewports) {
 				const flags = resultUrl.page.headers['FT-Flags'];
 				appFlags = flags.substring(0, flags.indexOf(DEFAULT_FLAGS) - 1);
 			}
-
 			resultUrl.screenCapture = `./pa11y_screenCapture/${viewport.width}x${viewport.height}/${appFlags}/${path || 'root'}.png`;
-
 		}
-
 		config.urls.push(resultUrl);
 	}
 }
