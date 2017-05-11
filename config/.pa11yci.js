@@ -1,7 +1,9 @@
+const extend = require('node.extend');
+
 const viewports = process.env.PA11Y_VIEWPORTS || [
 	{
-		width: 1440,
-		height: 1220
+		width: 1280,
+		height: 800
 	}
 ];
 
@@ -30,6 +32,7 @@ const config = {
 			}
 		},
 		timeout: 50000,
+		wait: 300 || process.env.PA11Y_WAIT,
 		hideElements: 'iframe[src*=google],iframe[src*=proxy]',
 		rules: ['Principle1.Guideline1_3.1_3_1_AAA']
 	},
@@ -74,10 +77,6 @@ smoke.forEach((smokeConfig) => {
 			url: process.env.TEST_URL + url
 		}
 
-		if (process.env.TEST_URL.includes('local')) {
-			thisUrl.screenCapture = './pa11y_screenCapture/' + url + '.png';
-		}
-
 		// Do we have test-specific headers?
 		if (smokeConfig.headers) {
 			thisUrl.page = {};
@@ -116,8 +115,22 @@ smoke.forEach((smokeConfig) => {
 
 for (let viewport of viewports) {
 	for (let url of urls) {
-		url.viewport = viewport;
-		config.urls.push(url);
+
+		const resultUrl = extend(true, {page: {viewport: viewport}}, url);
+
+		if (process.env.TEST_URL.includes('local')) {
+
+			const path = resultUrl.url.substring(resultUrl.url.lastIndexOf('/'));
+
+			let appFlags = 'no-flags';
+
+			if (resultUrl.page && resultUrl.page.headers) {
+				const flags = resultUrl.page.headers['FT-Flags'];
+				appFlags = flags.substring(0, flags.indexOf(DEFAULT_FLAGS) - 1);
+			}
+			resultUrl.screenCapture = `./pa11y_screenCapture/${viewport.width}x${viewport.height}/${appFlags}/${path || 'root'}.png`;
+		}
+		config.urls.push(resultUrl);
 	}
 }
 
