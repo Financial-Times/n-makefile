@@ -52,6 +52,14 @@ clea%: ## clean: Clean this git repository.
 	@git clean -fxd
 	@$(DONE)
 
+ini%: ## init: Clean this repository and start from a fresh build.
+ini%: heroku-login-check
+	$(MAKE) clean
+	$(MAKE) install
+	$(MAKE) .env
+	$(MAKE) build
+	@$(DONE)
+
 instal%: ## install: Setup this repository.
 instal%: node_modules bower_components _install_scss_lint .editorconfig .eslintrc.js .scss-lint.yml .pa11yci.js webpack.config.js heroku-cli
 	@$(MAKE) $(foreach f, $(shell find functions/* -type d -maxdepth 0 2>/dev/null), $f/node_modules $f/bower_components)
@@ -173,6 +181,9 @@ ENV_MSG_CANT_GET = "Error: Cannot get config vars for this service. Check you ar
 MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete Procfile."
 heroku-cli:
 	@if [ -e Procfile ]; then heroku auth:whoami &>/dev/null || (echo $(MSG_HEROKU_CLI) && exit 1); fi
+
+heroku-login-check:
+	@if [[ `heroku whoami 2>/dev/null` != *'@ft.com' ]]; then (HEROKU_ORGANIZATION=financial-times heroku login --sso); fi
 
 # VERIFY SUB-TASKS
 
