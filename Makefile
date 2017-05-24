@@ -153,21 +153,25 @@ ENV_MSG_CANT_GET = "Error: Cannot get config vars for this service. Check you ar
 	@if [ ! -z $(CIRCLECI) ]; then (echo $(ENV_MSG_CIRCLECI) && exit 1); fi
 	@$(call CONFIG_VARS,development,env) > .env && perl -pi -e 's/="(.*)"/=\1/' .env && $(DONE) || (echo $(ENV_MSG_CANT_GET) && rm .env && exit 1);
 
-# replace .env with this .env2 when you want to use the vault instead of config-vars
+# replace .env with this when you want to use the vault instead of config-vars
 .env-vault:
 	@if [[ $(shell grep --count *.env* .gitignore) -eq 0 ]]; then (echo $(ENV_MSG_IGNORE_ENV) && exit 1); fi
 	@if [ ! -e package.json ]; then (echo $(ENV_MSG_PACKAGE_JSON) && exit 1); fi
 	@if [ ! -z $(CIRCLECI) ]; then (echo $(ENV_MSG_CIRCLECI) && exit 1); fi
 # get development config from the vault
 # - the tail command removes the first three lines (vault metadata)
-# - the 1st sed command removes the last line (empty line)
-# - the 2nd sed command changes remaining lines to key=value format
-	@vault auth --method github \
-		&& vault read secret/teams/next/$(APP_NAME)/development \
+# - the first sed command removes the last line (empty line)
+# - the second sed command changes remaining lines to key=value format
+	@vault read secret/teams/next/$$(echo $(APP_NAME) | sed 's/^ft-//')/development \
 		| tail -n +4 \
 		| sed -e '$$ d' \
-		| sed -E 's/^([^ ]*)[[:blank:]]*([^ ].*)$$/\1=\2/' \
+		| perl -p -e 's/^([^ \t]+)\s+(.+)$$/\1=\2/' \
 		> .env
+	@vault read secret/teams/next/next-globals/development \
+		| tail -n +4 \
+		| sed -e '$$ d' \
+		| perl -p -e 's/^([^ \t]+)\s+(.+)$$/\1=\2/' \
+		>> .env
 	@$(DONE)
 
 MSG_HEROKU_CLI = "Please make sure the Heroku CLI toolbelt is installed - see https://toolbelt.heroku.com/. And make sure you are authenticated by running ‘heroku login’. If this is not an app, delete Procfile."
