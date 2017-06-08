@@ -167,7 +167,7 @@ ENV_MSG_CANT_GET = "Error: Cannot get config vars for this service. Check you ar
 		| sed -e '$$ d' \
 		| perl -pe 's/^([^ \t]+)\s+(.+)$$/\1=\2/' \
 		> .env
-	@vault read secret/teams/next/next-globals/development \
+	@vault read secret/teams/next/shared/development \
 		| tail -n +4 \
 		| sed -e '$$ d' \
 		| perl -pe 's/^([^ \t]+)\s+(.+)$$/\1=\2/' \
