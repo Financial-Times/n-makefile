@@ -1,5 +1,9 @@
 # n-makefile
 
+## ...has been replaced by [n-gage](https://github.com/financial-times/n-gage).
+
+it has all the same features, is kept up to date, and is easier to install and keep updated in your app. use that instead.
+
 ## Installing
 
 Download the latest release of `n-makefile` into the root directory of your project:-
